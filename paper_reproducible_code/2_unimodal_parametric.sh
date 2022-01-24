@@ -28,10 +28,17 @@ Rscript 1_runNimbleModels.R  \
 
 
 # Rscript 1_runNimbleModels.R  \
-# --model=models/parametric/parametric_IRT_constrainedAbilities.R \
+# --model=models/parametric/parametric_IRT_constrainedItem.R \
 # --data=data/simulation_unimodal.rds \
-# --niter=500 \
-# --nburnin=50 \
+# --niter=50000 \
+# --nburnin=5000 \
 # --nthin=1 \
 # --mode=default
 
+# Rscript 1_runNimbleModels.R  \
+# --model=models/parametric/parametric_IRT_constrainedAbilities.R \
+# --data=data/simulation_unimodal.rds \
+# --niter=50000 \
+# --nburnin=5000 \
+# --nthin=1 \
+# --mode=default

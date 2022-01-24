@@ -7,7 +7,7 @@
 ##-----------------------------------------#
 args <- R.utils::commandArgs(asValue=TRUE)
 
-args <- list()
+# args <- list()
 
 # args$model <- "models/bnp_long/bnp_SI_unconstrained.R"
 # args$dirResults <- "output/posterior_waic/"
