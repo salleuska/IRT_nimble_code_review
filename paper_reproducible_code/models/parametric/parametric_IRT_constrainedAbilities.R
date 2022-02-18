@@ -19,9 +19,9 @@ code2PL <- nimbleCode({
   }
 
   # ## dummy nodes to track log porbability and log likelihood
-  # logProbAll  ~ dnorm(0,1)
-  # logProbSum ~ dnorm(0,1)
-  logLik      ~ dnorm(0,1)
+  myLogProbAll   ~ dnorm(0,1)
+  myLogProbSome  ~ dnorm(0,1)
+  myLogLik       ~ dnorm(0,1)
 
 })
 

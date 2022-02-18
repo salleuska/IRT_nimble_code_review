@@ -29,6 +29,12 @@ code2PL <- nimbleCode({
   mu ~ dnorm(0, var = 3)
   s2.eta ~ dinvgamma(2.01, 1.01)
 
+
+  ## dummy nodes to track log porbability and log likelihood
+  myLogProbAll   ~ dnorm(0,1)
+  myLogProbSome  ~ dnorm(0,1)
+  myLogLik       ~ dnorm(0,1)
+
 })
 
 constants <- list(NTot= length(data$y)[1],

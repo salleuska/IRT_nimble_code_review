@@ -17,6 +17,12 @@ code2PL <- nimbleCode({
     eta[j] ~ dnorm(0, 1)
   }  
 
+
+  ## dummy nodes to track log porbability and log likelihood
+  myLogProbAll   ~ dnorm(0,1)
+  myLogProbSome  ~ dnorm(0,1)
+  myLogLik       ~ dnorm(0,1)
+
 })
 
 
