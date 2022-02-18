@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH --mail-type=ALL                       
-#SBATCH --mail-user=sally.paganin@berkeley.edu
+#SBATCH --mail-user=spaganin@hsph.harvard.edu
 #SBATCH -o health_parametric_%j.out                 # File to which STDERR will be written, including job ID
 #SBATCH --cpus-per-task=1
 #SBATCH --array=0-5
