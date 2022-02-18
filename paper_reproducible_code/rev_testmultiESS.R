@@ -2,9 +2,7 @@
 args <- R.utils::commandArgs(asValue=TRUE)
 
 # args <- list()
-#args$resFileName <- "output/posterior_samples_submission/simulation_unimodal/parametric/parametric_IRT_unconstrained.rds"
-
-# args$resFileName <- "output/posterior_samples/simulation_unimodal/parametric/parametric_IRT_unconstrained.rds"
+# args$resFileName <- "output/posterior_samples_submission/simulation_unimodal/parametric/parametric_IRT_unconstrained.rds"
 
 
 # args$resFileName <- "output/posterior_samples_submission/simulation_unimodal/bnp/bnp_IRT_unconstrained.rds"
@@ -47,7 +45,7 @@ ess_coda_latent  <- NA
 ess_multi_latent  <- NA
 
 onlyItem <- cbind(elaboratedResObj$lambdaSamp, 
-            elaboratedResObj$betaSamp)
+            elaboratedResObj$betaSamp[, -1])
 
 latentPars <- cbind(onlyItem[indexThinning, ], 
                     elaboratedResObj$etaSamp)

@@ -18,6 +18,11 @@ code2PL <- nimbleCode({
     eta[j] ~ dnorm(0, 1)
   }
 
+  # ## dummy nodes to track log porbability and log likelihood
+  # logProbAll  ~ dnorm(0,1)
+  # logProbSum ~ dnorm(0,1)
+  logLik      ~ dnorm(0,1)
+
 })
 
 constants <- list(I= dim(data$y)[2], N = dim(data$y)[1])

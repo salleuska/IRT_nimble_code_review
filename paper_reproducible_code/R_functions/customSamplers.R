@@ -1,7 +1,7 @@
 ##-----------------------------------------#
 ## Bayesian semiparametric Item Response Theory models using NIMBLE 
 ## Sally Paganin
-## November 2020
+## February 2022
 ##-----------------------------------------#
 ## This script implements a NIMBLE custom sampler, defined as centered sampler.
 ##------------------------------##

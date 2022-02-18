@@ -1,20 +1,20 @@
 ##-----------------------------------------#
 ## Bayesian semiparametric Item Response Theory models using NIMBLE 
 ## Sally Paganin
-## last update: June, 22 2021
-## R version 4.1.0 (2021-05-18) -- "Camp Pontanezen"
-## nimble version 0.11.1
+## last update: Feb 10, 2022
+## R version 4.1.2 (2021-11-01) -- "Bird Hippie"
+## nimble version ??
 ##-----------------------------------------#
-args <- R.utils::commandArgs(asValue=TRUE)
+# args <- R.utils::commandArgs(asValue=TRUE)
 
-# args <- list()
+args <- list()
 
-# args$model <- "models/bnp_long/bnp_SI_unconstrained.R"
-# args$dirResults <- "output/posterior_waic/"
-# args$data <- "data/data_timss.rds"
-# args$niter <- 100
-# args$nthin <- 10
-# args$mode <- "default"
+args$model <- "models/parametric/parametric_IRT_constrainedAbilities.R"
+args$dirResults <- "output/posterior_waic/"
+args$data <- "data/simulation_unimodal.rds"
+args$niter <- 100
+args$nthin <- 10
+args$mode <- "default"
 
 ## Script options from bash
 ## --model=
@@ -58,15 +58,26 @@ cat("Model ", filename, "\n")
 cat("##--------------------------------##\n")
 
 ## load library and functions
-
-if(calcWAIC) {
-#	library(nimble, lib.loc="/usr/local/Cellar/r/dev")
-	library(nimble)	
-} else {
-	library(nimble)
-}
-
+library(nimble)
 source("R_functions/customSamplers.R")
+# source("R_functions/monitorLogProb.R")
+logLik_summer <- nimbleFunction(
+	name = 'logLik_summer',
+	contains = sampler_BASE,
+    setup = function(model, mvSaved, target, control) {
+          dataNodes <- model$getNodeNames(dataOnly = TRUE)
+    },
+    run = function() {
+        model[[target]] <<- model$getLogProb(dataNodes)  
+
+        copy(from = model, to = mvSaved, 
+    	row = 1, nodes = target, logProb = FALSE)
+
+   }, 
+   methods = list( reset = function () {})
+)
+ 
+############
 
 ## Handle data differently if TIMSS (long format)
 if(grepl("timss", args$data)){
@@ -120,12 +131,16 @@ if(grepl("bnp", args$model)) {
 ## Create model and MCMC configuration
 ##---------------------------------------------------##
 
+
 model <- nimbleModel(code 			= code2PL,
 										 data 			= data,  
 										 constants	= constants,
 										 inits 			= inits, 
 										 calculate 	= FALSE)
 
+# monitors <- c(monitors, "logProbAll", "logProbSum", "logLik")
+monitors <- c(monitors, "logLik")
+## Flag for WAIC
 if(calcWAIC) {
 ## conditional WAIC - grouped students
   if(grepl("timss", args$data)) {
@@ -145,6 +160,22 @@ if(calcWAIC) {
 	mcmcConf <- configureMCMC(model, monitors = monitors)
 
 }
+
+## Add samplers to monitor log posterior probability and likelihood
+nodeList = c("beta", "lambda", "eta")
+if("gamma" %in% monitors) nodeList[1] <- "gamma"
+
+# mcmcConf$removeSampler("logProbAll", "logProbSum", "logLik")
+# mcmcConf$addSampler("logProbSum", type =  "logProb_summer", 
+#  				control = list(nodeList = nodeList) )
+
+# mcmcConf$removeSampler("logProbAll")
+# mcmcConf$addSampler("logProbAll", type =  "logProb_summer")
+
+mcmcConf$removeSampler("logLik")
+mcmcConf$addSampler("logLik", type =  "logLik_summer")
+
+mcmcConf
 
 ## sampler configuration changes according to mode
 if(args$mode == "centered" ) {
@@ -183,7 +214,8 @@ compilationTime <- system.time({
     }
 })
 
-	
+
+
 ##---------------------------------------------------##
 ## Run MCMC 
 ##---------------------------------------------------##
@@ -226,7 +258,7 @@ runningTime <- system.time({try(
 ##---------------------------------------------------##
 results <- list(samples  = res,
 				compilationTime  = compilationTime,
-				# samplingTime     = runningTime*(1 - MCMCcontrol$niter/MCMCcontrol$nburnin),
+				samplingTime     = runningTime*(1 - MCMCcontrol$niter/MCMCcontrol$nburnin),
 				runningTime      = runningTime,
 				MCMCcontrol      = MCMCcontrol)
 
@@ -236,18 +268,18 @@ if(calcWAIC) results$modelWAIC <- Cmcmc$getWAIC()$WAIC
 ##---------------------------------------------------##
 ## directory for output
 ##---------------------------------------------------##
-modelType       <- unlist(strsplit(basename(args$model), "[\\_\\.]"))[1]
-dataName        <- unlist(strsplit(basename(args$data), "[.]"))[1]
+# modelType       <- unlist(strsplit(basename(args$model), "[\\_\\.]"))[1]
+# dataName        <- unlist(strsplit(basename(args$data), "[.]"))[1]
 
-outDir <- paste0(dir, "/", dataName, "/", modelType, "/")
+# outDir <- paste0(dir, "/", dataName, "/", modelType, "/")
 
-dir.create(file.path(outDir), recursive = TRUE, showWarnings = FALSE)
+# dir.create(file.path(outDir), recursive = TRUE, showWarnings = FALSE)
 
 
-if(grepl("centered", args$mode)) {
-	filenameOutput <- paste0(outDir, filename, "_centered.rds")
-} else {
-	filenameOutput <- paste0(outDir, filename, ".rds")
-}
+# if(grepl("centered", args$mode)) {
+# 	filenameOutput <- paste0(outDir, filename, "_centered.rds")
+# } else {
+# 	filenameOutput <- paste0(outDir, filename, ".rds")
+# }
 
-saveRDS(results, file = filenameOutput )
+# saveRDS(results, file = filenameOutput )
