@@ -13,7 +13,7 @@ Rscript 1_runNimbleModels.R  \
 --data=data/simulation_bimodal_I_10_N_1000.rds \
 --niter=50000 \
 --nburnin=5000 \
---nthin=10 \
+--nthin=1 \
 --mode=default
 
 Rscript 1_runNimbleModels.R  \
@@ -21,7 +21,7 @@ Rscript 1_runNimbleModels.R  \
 --data=data/simulation_bimodal_I_10_N_1000.rds \
 --niter=50000 \
 --nburnin=5000 \
---nthin=10 \
+--nthin=1 \
 --mode=centered
 
 Rscript 1_runNimbleModels.R  \
@@ -29,7 +29,7 @@ Rscript 1_runNimbleModels.R  \
 --data=data/simulation_bimodal_I_10_N_5000.rds \
 --niter=50000 \
 --nburnin=5000 \
---nthin=10 \
+--nthin=1 \
 --mode=default
 
 Rscript 1_runNimbleModels.R  \
@@ -37,5 +37,5 @@ Rscript 1_runNimbleModels.R  \
 --data=data/simulation_bimodal_I_10_N_5000.rds \
 --niter=50000 \
 --nburnin=5000 \
---nthin=10 \
+--nthin=1 \
 --mode=centered

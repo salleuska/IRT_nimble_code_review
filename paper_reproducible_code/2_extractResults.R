@@ -11,7 +11,7 @@ source("R_functions/rescalingFunctions.R")
 args <- R.utils::commandArgs(asValue=TRUE)
 
 # args <- list()
-# args$resFileName <- "output/posterior_samples/simulation_unimodal/parametric/parametric_SI_constrainedItem.rds"
+# args$resFileName <- "output/posterior_samples/simulation_bimodal/parametric/parametric_IRT_constrainedAbilities.rds"
 
 ## --resFileName
 ## --outDir
@@ -31,6 +31,15 @@ constraint <- strsplit(basename(fileName), "\\_|.rds")[[1]][3]
 
 ## read objects
 resObj <- readRDS(args$resFileName)
+
+## Check and store thinning info for eta
+thinEta <- resObj$MCMCcontrol$thin2
+nSamp <- resObj$MCMCcontrol$niter - resObj$MCMCcontrol$nburnin
+
+indicesEta <- seq(from = thinEta,  
+          to = nSamp, 
+          by = thinEta)
+
 
 ##-------------------------------------------------------##
 ## rescale posterior samples to common parameterization
@@ -69,13 +78,36 @@ saveRDS(modelRes, file = paste0(outDirResults, "/" , fileName, ".rds"))
 ##-----------------------------------------#
 ## Get efficency results 
 ##-----------------------------------------#
-ess_coda   <- NA
+## all parameters at same level (item + sampled abilities)
 
-xx <- cbind(modelRes[grepl("lambda", names(modelRes))][[1]],
-            modelRes[grepl("beta", names(modelRes))][[1]])
+essCodaItems          <- NA
+essCodaItemsAbility   <- NA
 
-## compute ess for item parameters using different packages
-ess_coda <- min(coda::effectiveSize(xx))
+essCodaLogLik                <- NA
+essCodaLogPostAll            <- NA
+essCodaLogPostItemsAbility   <- NA
+
+multiEssItemsAbility   <- NA
+
+
+onlyItems <- cbind(modelRes[grepl("lambda", names(modelRes))][[1]],
+              modelRes[grepl("beta", names(modelRes))][[1]])
+
+itemsAndAbility <- cbind(onlyItems[indicesEta, ], modelRes$etaSamp)
+
+## compute mixing performance measures
+essCodaItems <- min(coda::effectiveSize(onlyItems))
+essCodaItemsAbility <- min(coda::effectiveSize(itemsAndAbility))
+
+
+essCodaLogLik                <- coda::effectiveSize(modelRes$otherParSamp[, "myLogLik"])
+essCodaLogPostAll            <- coda::effectiveSize(modelRes$otherParSamp[, "myLogProbAll"])
+essCodaLogPostItemsAbility   <- coda::effectiveSize(modelRes$otherParSamp[, "myLogProbSome"])
+
+try(multiEssItemsAbility <- mcmcse::multiESS(itemsAndAbility[, !grepl("beta[1]|lambda[1]", colnames(itemsAndAbility))]))
+
+
+## Extract times
 
 compilationTime <- resObj$compilationTime[3]
 runningTime <- resObj$runningTime[3]
@@ -92,6 +124,9 @@ if(modelType == "parametric"){
 
 }
 
+
+
+
 ## adding WAIC
 WAIC <- 0
 
@@ -103,7 +138,17 @@ outDirTime <- paste0("output/mcmc_time/", data)
 dir.create(file.path(outDirTime), recursive = TRUE, showWarnings = FALSE)
 
 outFile <- paste0(outDirTime, "/", modelType, "_efficiency.txt")
-row <- cbind(fileName, ess_coda, compilationTime, runningTime, samplingTime, WAIC)
+row <- cbind(fileName, 
+              essCodaItems,
+              essCodaItemsAbility,
+              essCodaLogLik,
+              essCodaLogPostAll,
+              essCodaLogPostItemsAbility,
+              multiEssItemsAbility,
+              compilationTime,
+              runningTime,
+              samplingTime,
+              WAIC)
 
 if(!file.exists(outFile)){
 	cat(colnames(row), "\n", file = outFile)

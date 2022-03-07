@@ -8,7 +8,7 @@
 args <- R.utils::commandArgs(asValue=TRUE)
 
 # args <- list()
-# args$model <- "models/parametric/parametric_IRT_constrainedAbilities.R"
+# args$model <- "models/bnp/bnp_IRT_constrainedItem.R"
 # args$data <- "data/simulation_unimodal_I_10_N_1000.rds"
 # args$niter <- 100
 # args$nburnin <- 10
