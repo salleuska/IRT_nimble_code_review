@@ -6,6 +6,11 @@
 ###########################
 
 Rscript 1_runStanModel.R  \
+--data=data/simulation_bimodal.rds \
+--nsamples=4000 \
+--nwarmup=4000 
+
+Rscript 1_runStanModel.R  \
 --data=data/simulation_bimodal_I_30_N_1000.rds \
 --nsamples=4000 \
 --nwarmup=4000 

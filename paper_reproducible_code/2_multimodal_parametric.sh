@@ -14,7 +14,7 @@ Rscript 1_runNimbleModels.R  \
 --data=data/simulation_multimodal.rds \
 --niter=50000 \
 --nburnin=5000 \
---nthin=10 \
+--nthin=1 \
 --mode=default
 
 
@@ -23,5 +23,5 @@ Rscript 1_runNimbleModels.R  \
 --data=data/simulation_multimodal.rds \
 --niter=50000 \
 --nburnin=5000 \
---nthin=10 \
+--nthin=1 \
 --mode=centered

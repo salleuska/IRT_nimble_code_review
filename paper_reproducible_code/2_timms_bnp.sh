@@ -10,18 +10,18 @@ FILES=(models/bnp_long/*.R)
 
 Rscript 1_runNimbleModels.R  \
 --model=${FILES[$SLURM_ARRAY_TASK_ID]} \
---dirResults=output/posterior_waic \
+--dirResults=output/posterior_samples \
 --data=data/data_timss.rds \
 --niter=50000 \
 --nburnin=5000 \
---nthin=10 \
+--nthin=5 \
 --mode=default
 
 Rscript 1_runNimbleModels.R  \
 --model=${FILES[$SLURM_ARRAY_TASK_ID]} \
---dirResults=output/posterior_waic \
+--dirResults=output/posterior_samples \
 --data=data/data_timss.rds \
 --niter=50000 \
 --nburnin=5000 \
---nthin=10 \
+--nthin=5 \
 --mode=centered

@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH --mail-type=ALL                       
-#SBATCH --mail-user=sally.paganin@berkeley.edu
+#SBATCH --mail-user=spaganin@hsph.harvard.edu
 #SBATCH -o unimodal_parametric_%j.out                 # File to which STDERR will be written, including job ID
 #SBATCH --cpus-per-task=1
 #SBATCH --array=0-5
@@ -14,7 +14,7 @@ Rscript 1_runNimbleModels.R  \
 --data=data/simulation_unimodal.rds \
 --niter=50000 \
 --nburnin=5000 \
---nthin=10 \
+--nthin=1 \
 --mode=default
 
 
@@ -23,7 +23,7 @@ Rscript 1_runNimbleModels.R  \
 --data=data/simulation_unimodal.rds \
 --niter=50000 \
 --nburnin=5000 \
---nthin=10 \
+--nthin=1 \
 --mode=centered
 
 

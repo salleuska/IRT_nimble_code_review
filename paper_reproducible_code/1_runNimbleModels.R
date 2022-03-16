@@ -8,8 +8,8 @@
 args <- R.utils::commandArgs(asValue=TRUE)
 
 # args <- list()
-# args$model <- "models/bnp/bnp_IRT_constrainedItem.R"
-# args$data <- "data/simulation_unimodal_I_10_N_1000.rds"
+# args$model <- "models/parametric/parametric_IRT_constrainedItem.R"
+# args$data <- "data/data_health.rds"
 # args$niter <- 100
 # args$nburnin <- 10
 # args$nthin <- 10
@@ -186,6 +186,12 @@ if(args$mode == "centered" ) {
 mcmcConf$addMonitors2("eta")
 mcmcConf$setThin2(MCMCcontrol$thin2)
 mcmc <- buildMCMC(mcmcConf)	
+
+## Add thinning for all variables when running on data
+if(grepl("timss", args$data) | grepl("health", args$data)) {
+	mcmcConf$setThin(MCMCcontrol$thin2)
+}
+
 
 
 ##---------------------------------------------------##

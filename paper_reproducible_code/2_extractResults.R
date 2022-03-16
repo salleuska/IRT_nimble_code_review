@@ -11,7 +11,10 @@ source("R_functions/rescalingFunctions.R")
 args <- R.utils::commandArgs(asValue=TRUE)
 
 # args <- list()
-# args$resFileName <- "output/posterior_samples/simulation_bimodal/parametric/parametric_IRT_constrainedAbilities.rds"
+# args$resFileName <- "output/posterior_samples/simulation_unimodal/parametric/parametric_IRT_constrainedAbilities.rds"
+
+# args <- list()
+# args$resFileName <- "output/posterior_samples/simulation_unimodal_I_10_N_1000/parametric/parametric_IRT_stan.rds"
 
 ## --resFileName
 ## --outDir
@@ -32,13 +35,22 @@ constraint <- strsplit(basename(fileName), "\\_|.rds")[[1]][3]
 ## read objects
 resObj <- readRDS(args$resFileName)
 
-## Check and store thinning info for eta
-thinEta <- resObj$MCMCcontrol$thin2
-nSamp <- resObj$MCMCcontrol$niter - resObj$MCMCcontrol$nburnin
 
-indicesEta <- seq(from = thinEta,  
-          to = nSamp, 
-          by = thinEta)
+if(constraint == "stan") { 
+  thinEta <-1 
+  nSamp <- resObj$MCMCcontrol$niter - resObj$MCMCcontrol$nwarmup
+  indicesEta <- seq(from = thinEta,  
+            to = nSamp, 
+            by = thinEta)
+} else {
+  ## Check and store thinning info for eta
+  thinEta <- resObj$MCMCcontrol$thin2
+  nSamp <- resObj$MCMCcontrol$niter - resObj$MCMCcontrol$nburnin
+
+  indicesEta <- seq(from = thinEta,  
+            to = nSamp, 
+            by = thinEta)  
+}
 
 
 ##-------------------------------------------------------##
@@ -70,6 +82,31 @@ if(constraint == "stan") {
   colnames(modelRes$betaSamp) <- gsub("gamma", "beta", colnames(modelRes$betaSamp))
 }
 
+
+## matrices for ESS evaluations
+onlyItems <- cbind(modelRes[grepl("lambda", names(modelRes))][[1]],
+              modelRes[grepl("beta", names(modelRes))][[1]])
+
+itemsAndAbility <- cbind(onlyItems[indicesEta, ], modelRes$etaSamp)
+
+
+## for plots etc save thinned samples for abilities 
+## and other related parameters
+
+if(constraint != "stan" & thinEta == 1) {
+  thinEta <- 10
+  indicesEta <- seq(from = thinEta,  
+            to = nSamp, 
+            by = thinEta)  
+
+  modelRes$etaSamp <- modelRes$etaSamp[indicesEta, ]
+  modelRes$scaleShiftEta <- modelRes$scaleShiftEta[indicesEta]
+  modelRes$locationShiftEta <- modelRes$locationShiftEta[indicesEta]
+  modelRes$otherParSamp <- modelRes$otherParSamp[indicesEta, ]
+
+}
+
+
 outDirResults <- paste0(outDir, data, "/", modelType)
 dir.create(file.path(outDirResults), recursive = TRUE, showWarnings = FALSE)
 
@@ -90,10 +127,6 @@ essCodaLogPostItemsAbility   <- NA
 multiEssItemsAbility   <- NA
 
 
-onlyItems <- cbind(modelRes[grepl("lambda", names(modelRes))][[1]],
-              modelRes[grepl("beta", names(modelRes))][[1]])
-
-itemsAndAbility <- cbind(onlyItems[indicesEta, ], modelRes$etaSamp)
 
 ## compute mixing performance measures
 essCodaItems <- min(coda::effectiveSize(onlyItems))
@@ -104,7 +137,17 @@ essCodaLogLik                <- coda::effectiveSize(modelRes$otherParSamp[, "myL
 essCodaLogPostAll            <- coda::effectiveSize(modelRes$otherParSamp[, "myLogProbAll"])
 essCodaLogPostItemsAbility   <- coda::effectiveSize(modelRes$otherParSamp[, "myLogProbSome"])
 
-try(multiEssItemsAbility <- mcmcse::multiESS(itemsAndAbility[, !grepl("beta[1]|lambda[1]", colnames(itemsAndAbility))]))
+
+itemsAndAbilityMultiESS <- itemsAndAbility[, !grepl("(beta\\[1\\])|(lambda\\[1\\])", colnames(itemsAndAbility))]
+
+## Multivariate ESS using multivariate Batch mean(mBm) stimator 
+## Vats et al Biometrika paper on multivariate ESS
+## note: by defaul multiESS tries to get the lugsail estimator
+## (i.e. starts from the mBm, applying some corrections)
+## which does not work in this application
+
+try(multiEssItemsAbility <- mcmcse::multiESS(itemsAndAbilityMultiESS, 
+                                            method = "bm", r = 1, adjust = FALSE))
 
 
 ## Extract times
@@ -123,8 +166,6 @@ if(modelType == "parametric"){
   }
 
 }
-
-
 
 
 ## adding WAIC

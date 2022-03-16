@@ -60,7 +60,7 @@ posteriorRescalingBeta <- function(samples, samples2 = NULL, thinEta = 1, rescal
   
   lambdaSamp <-samples[, grep("^lambda", colnames(samples))]
   betaSamp <- samples[, grep("beta\\[", colnames(samples))]
-  otherParSamp <- samples[, -grep("(lambda|gamma|^eta)", colnames(samples))]
+  otherParSamp <- samples[, -grep("(lambda|beta|^eta)", colnames(samples))]
 
   if(is.null(samples2)){
     etaSamp <- samples[, grep("^eta", colnames(samples))]
