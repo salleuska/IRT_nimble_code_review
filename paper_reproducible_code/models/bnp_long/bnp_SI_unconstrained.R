@@ -1,5 +1,5 @@
 ##---------------------------------------- ##
-code2PL <- nimbleCode({
+code <- nimbleCode({
   for(i in 1:NTot) {
     y[i] ~ dbern(pi[i])
     logit(pi[i]) <-  lambda[item[i]]*eta[student[i]] + gamma[item[i]]

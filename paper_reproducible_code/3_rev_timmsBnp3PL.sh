@@ -1,12 +1,12 @@
 #!/bin/bash
 #SBATCH --mail-type=ALL                       
 #SBATCH --mail-user=sally.paganin@berkeley.edu
-#SBATCH -o timss3PL_bnp_%j.out                 # File to which STDERR will be written, including job ID
+#SBATCH -o timss_para3PL_%j.out                 # File to which STDERR will be written, including job ID
 #SBATCH --cpus-per-task=1
-#SBATCH --array=0-3
+#SBATCH --array=0-5
 ######################
 
-FILES=(models/bnp3PL_long/*.R)
+FILES=(models/parametric3PL/*.R)
 
 Rscript 1_runNimbleModels.R  \
 --model=${FILES[$SLURM_ARRAY_TASK_ID]} \

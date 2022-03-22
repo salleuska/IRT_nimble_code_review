@@ -1,7 +1,7 @@
 ##---------------------------------------- ##
 ## Parametric 2PL - unconstrained ----
 ##----------------------------------------##
-code2PL <- nimbleCode({
+code <- nimbleCode({
   for(i in 1:I) {
     for(j in 1:N) {
       y[j, i] ~ dbern(pi[j, i])

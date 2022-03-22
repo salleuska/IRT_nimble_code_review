@@ -1,5 +1,5 @@
 ##----------------------------------------##
-code2PL <- nimbleCode({
+code <- nimbleCode({
   
   for(i in 1:NTot) {
     y[i] ~ dbern(pi[i])

@@ -1,6 +1,5 @@
 ##---------------------------------------- ##
-## Test 3PL model 
-## Bambirra and Goncalves - vanilla (no mixture)
+## 3PL model - parametric
 ##----------------------------------------##
 ## lambda[i] - discrimination parameter
 ## beta[i]   - difficulty paramter

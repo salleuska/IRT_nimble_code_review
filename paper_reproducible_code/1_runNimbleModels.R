@@ -116,7 +116,7 @@ if(grepl("bnp", args$model)) {
 ##---------------------------------------------------##
 
 
-model <- nimbleModel(code 			= code2PL,
+model <- nimbleModel(code 			= code,
 										 data 			= data,  
 										 constants	= constants,
 										 inits 			= inits, 
