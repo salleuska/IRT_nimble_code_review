@@ -14,7 +14,7 @@ Rscript 1_runNimbleModels.R  \
 --data=data/data_timss.rds \
 --niter=50000 \
 --nburnin=5000 \
---nthin=5 \
+--nthin=1 \
 --mode=default
 
 Rscript 1_runNimbleModels.R  \
@@ -23,5 +23,5 @@ Rscript 1_runNimbleModels.R  \
 --data=data/data_timss.rds \
 --niter=50000 \
 --nburnin=5000 \
---nthin=5 \
+--nthin=1 \
 --mode=centered
