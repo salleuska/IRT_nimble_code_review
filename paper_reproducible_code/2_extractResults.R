@@ -10,8 +10,8 @@ source("R_functions/rescalingFunctions.R")
 ##-----------------------------------------#
 args <- R.utils::commandArgs(asValue=TRUE)
 
-args <- list()
-args$resFileName <- "/scratch/users/sallypaganin/data_health/bnp/bnp_IRT_unconstrained.rds"
+# args <- list()
+# args$resFileName <- "/scratch/users/sallypaganin/data_health/bnp/bnp_IRT_unconstrained.rds"
 
 # args <- list()
 # args$resFileName <- "output/posterior_samples/simulation_unimodal_I_10_N_1000/parametric/parametric_IRT_stan.rds"
@@ -134,11 +134,11 @@ multiEssItemsAbility   <- NA
 essCodaItems <- min(coda::effectiveSize(onlyItems))
 essCodaItemsAbility <- min(coda::effectiveSize(itemsAndAbility))
 
-
-essCodaLogLik                <- coda::effectiveSize(modelRes$otherParSamp[, "myLogLik"])
-essCodaLogPostAll            <- coda::effectiveSize(modelRes$otherParSamp[, "myLogProbAll"])
-essCodaLogPostItemsAbility   <- coda::effectiveSize(modelRes$otherParSamp[, "myLogProbSome"])
-
+if(constraint != "stan") { 
+  essCodaLogLik                <- coda::effectiveSize(modelRes$otherParSamp[, "myLogLik"])
+  essCodaLogPostAll            <- coda::effectiveSize(modelRes$otherParSamp[, "myLogProbAll"])
+  essCodaLogPostItemsAbility   <- coda::effectiveSize(modelRes$otherParSamp[, "myLogProbSome"])
+}
 
 itemsAndAbilityMultiESS <- itemsAndAbility[, !grepl("(beta\\[1\\])|(lambda\\[1\\])", colnames(itemsAndAbility))]
 
@@ -171,7 +171,7 @@ if(modelType == "parametric"){
 
 
 ## adding WAIC
-WAIC <- 0
+WAIC <- 0.0
 
 if(modelType == "parametric"){ 
   WAIC <- resObj$modelWAIC

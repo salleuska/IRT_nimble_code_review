@@ -18,35 +18,163 @@ bnpFileName <- "bnp_efficiency.txt"
 ##-----------------------------------------#
 ## Plot efficiency results for simulation
 ##-----------------------------------------#
+fileList <- list.files("output/mcmc_time", full.names = TRUE)
 
-unimodal <- read.table(paste0("output/mcmc_time/simulation_unimodal/", paraFileName), header = T)
-bimodal  <- read.table(paste0("output/mcmc_time/simulation_bimodal/", paraFileName), header = T)
 
-unimodal$ESS_second <- unimodal$multiEssItemsAbility/unimodal$runningTime
-bimodal$ESS_second  <- bimodal$multiEssItemsAbility/bimodal$runningTime
+##-----------------------------------------#
+## Unimodal
+##-----------------------------------------#
 
-bimodal$simulation  <- "Bimodal simulation"
-unimodal$simulation <- "Unimodal simulation"
+unimodalFiles <- fileList[grep("unimodal", fileList)]
 
-unimodal$labels <- gsub("parametric_", "", unimodal$fileName)
-bimodal$labels  <- gsub("parametric_", "", bimodal$fileName)
+unimodalList <- list()
+for(i in 1:length(unimodalFiles)){
+      unimodalList[[i]] <- read.table(paste0(unimodalFiles[i], "/", paraFileName), header = TRUE )
+      unimodalList[[i]]$simulation <- strsplit(unimodalFiles[i], "\\/")[[1]][3]
 
+}     
+
+unimodalDf <- as.data.frame(do.call(rbind, unimodalList))
+
+unique(unimodalDf$fileName)
+unique(labelData$R_label)
+
+unimodalDf$ESS_second <- unimodalDf$multiEssItemsAbility/unimodalDf$runningTime
+
+unimodalDf$labels <- gsub("parametric_", "", unimodalDf$fileName)
 ## match R labels to plot labels
-unimodal$labels <- labelData[match(unimodal$labels, labelData$R_label), ]$plot_label
-bimodal$labels  <- labelData[match(bimodal$labels, labelData$R_label), ]$plot_label
-
-
-
+unimodalDf$labels <- labelData[match(unimodalDf$labels, labelData$R_label), ]$plot_label
+unimodalDf[is.na(unimodalDf$labels), ] <- NULL
 
 ## data frame for plotting
-dfParametricEff <- data.frame(rbind(unimodal[, c("labels", "ESS_second", "simulation")],
-						                        bimodal[, c("labels", "ESS_second", "simulation")]))
+dfParametricEff <- data.frame(unimodalDf[, c("labels", "ESS_second", "simulation")])
 
 colnames(dfParametricEff) <- c("Strategy", "ESS", "Simulation")
 
 dfParametricEff$Strategy  <- factor(dfParametricEff$Strategy, levels = labelData$plot_label)
-dfParametricEff$Simulation <- factor(dfParametricEff$Simulation, levels = c("Unimodal simulation", "Bimodal simulation") )
+dfParametricEff$Simulation <- factor(dfParametricEff$Simulation)
 
+str(dfParametricEff)
+dfParametricEff$ESS
+
+ylab <- paste0("min ESS/second (total time)")
+p <-  ggplot(dfParametricEff,  aes_string(x = "Strategy", y= "ESS", fill = "Strategy")) +
+      geom_bar(position= position_dodge(),stat='identity',colour = "black",
+       width = 0.8) +
+      facet_wrap(~ Simulation, ncol=2, scales='free') +
+      ylab("min ESS/second (total time)") + xlab("") + 
+#      ylim(c(0,6)) + 
+      theme(legend.position = "none") +
+      coord_flip() +
+      scale_fill_manual(values = labelData$colors) +
+      scale_x_discrete(limits = rev(levels(dfParametricEff$Strategy))) 
+
+p
+
+##-----------------------------------------#
+## Bimodal
+##-----------------------------------------#
+
+bimodalFiles <- fileList[grep("bimodal", fileList)]
+
+bimodalList <- list()
+for(i in 1:length(bimodalFiles)){
+      bimodalList[[i]] <- read.table(paste0(bimodalFiles[i], "/", paraFileName), header = TRUE )
+      bimodalList[[i]]$simulation <- strsplit(bimodalFiles[i], "\\/")[[1]][3]
+
+}     
+
+bimodalDf <- as.data.frame(do.call(rbind, bimodalList))
+
+unique(bimodalDf$fileName)
+unique(labelData$R_label)
+
+bimodalDf$ESS_second <- bimodalDf$multiEssItemsAbility/bimodalDf$runningTime
+
+bimodalDf$labels <- gsub("parametric_", "", bimodalDf$fileName)
+## match R labels to plot labels
+bimodalDf$labels <- labelData[match(bimodalDf$labels, labelData$R_label), ]$plot_label
+bimodalDf[is.na(bimodalDf$labels), ] <- NULL
+
+## data frame for plotting
+dfParametricEff <- data.frame(bimodalDf[, c("labels", "ESS_second", "simulation")])
+
+colnames(dfParametricEff) <- c("Strategy", "ESS", "Simulation")
+
+dfParametricEff$Strategy  <- factor(dfParametricEff$Strategy, levels = labelData$plot_label)
+dfParametricEff$Simulation <- factor(dfParametricEff$Simulation)
+
+str(dfParametricEff)
+dfParametricEff$ESS
+ylab <- paste0("min ESS/second (total time)")
+p <-  ggplot(dfParametricEff,  aes_string(x = "Strategy", y= "ESS", fill = "Strategy")) +
+      geom_bar(position= position_dodge(),stat='identity',colour = "black",
+       width = 0.8) +
+      facet_wrap(~ Simulation, ncol=2, scales='free') +
+      ylab("min ESS/second (total time)") + xlab("") + 
+#      ylim(c(0,6)) + 
+      theme(legend.position = "none") +
+      coord_flip() +
+      scale_fill_manual(values = labelData$colors) +
+      scale_x_discrete(limits = rev(levels(dfParametricEff$Strategy))) 
+
+p
+
+##-----------------------------------------#
+## multimodal
+##-----------------------------------------#
+
+multimodalFiles <- fileList[grep("multimodal", fileList)]
+
+multimodalList <- list()
+for(i in 1:length(multimodalFiles)){
+      multimodalList[[i]] <- read.table(paste0(multimodalFiles[i], "/", paraFileName), header = TRUE )
+      multimodalList[[i]]$simulation <- strsplit(multimodalFiles[i], "\\/")[[1]][3]
+
+}     
+
+multimodalDf <- as.data.frame(do.call(rbind, multimodalList))
+
+unique(multimodalDf$fileName)
+unique(labelData$R_label)
+
+multimodalDf$ESS_second <- multimodalDf$multiEssItemsAbility/multimodalDf$runningTime
+
+multimodalDf$labels <- gsub("parametric_", "", multimodalDf$fileName)
+## match R labels to plot labels
+multimodalDf$labels <- labelData[match(multimodalDf$labels, labelData$R_label), ]$plot_label
+multimodalDf[is.na(multimodalDf$labels), ] <- NULL
+
+## data frame for plotting
+dfParametricEff <- data.frame(multimodalDf[, c("labels", "ESS_second", "simulation")])
+
+colnames(dfParametricEff) <- c("Strategy", "ESS", "Simulation")
+
+dfParametricEff$Strategy  <- factor(dfParametricEff$Strategy, levels = labelData$plot_label)
+dfParametricEff$Simulation <- factor(dfParametricEff$Simulation)
+
+str(dfParametricEff)
+dfParametricEff$ESS
+ylab <- paste0("min ESS/second (total time)")
+p <-  ggplot(dfParametricEff,  aes_string(x = "Strategy", y= "ESS", fill = "Strategy")) +
+      geom_bar(position= position_dodge(),stat='identity',colour = "black",
+       width = 0.8) +
+      facet_wrap(~ Simulation, ncol=2, scales='free') +
+      ylab("min ESS/second (total time)") + xlab("") + 
+#      ylim(c(0,6)) + 
+      theme(legend.position = "none") +
+      coord_flip() +
+      scale_fill_manual(values = labelData$colors) +
+      scale_x_discrete(limits = rev(levels(dfParametricEff$Strategy))) 
+
+p
+
+
+
+
+##-----------------------------------------#
+##-----------------------------------------#
+## OLD CODE - NOT RUN
 ##-----------------------------------------#
 ## Plot Figure 2a
 ##-----------------------------------------#

@@ -17,7 +17,7 @@ code <- nimbleCode({
   for(i in 1:I) {
     log(lambda[i]) ~ dnorm(0.5, var = 0.5)   
     beta[i] ~ dnorm(0,  var = 3)
-     delta[i] ~ dbeta(4, 12)
+    delta[i] ~ dbeta(4, 12)
  } 
   
   for(j in 1:N) {

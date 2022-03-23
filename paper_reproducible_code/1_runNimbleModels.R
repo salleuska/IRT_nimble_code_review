@@ -8,7 +8,7 @@
 args <- R.utils::commandArgs(asValue=TRUE)
 
 # args <- list()
-# args$model <- "models/parametric3PL_long/parametric3PL_SI_unconstrained.R"
+# args$model <- "models/bnp3PL_long/bnp3PL_SI_unconstrained.R"
 # args$data <- "data/data_timss.rds"
 # args$niter <- 100
 # args$nburnin <- 10
