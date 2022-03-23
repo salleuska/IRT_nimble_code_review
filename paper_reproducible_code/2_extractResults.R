@@ -10,8 +10,8 @@ source("R_functions/rescalingFunctions.R")
 ##-----------------------------------------#
 args <- R.utils::commandArgs(asValue=TRUE)
 
-# args <- list()
-# args$resFileName <- "output/posterior_samples/simulation_unimodal/parametric/parametric_IRT_constrainedAbilities.rds"
+args <- list()
+args$resFileName <- "/scratch/users/sallypaganin/data_health/bnp/bnp_IRT_unconstrained.rds"
 
 # args <- list()
 # args$resFileName <- "output/posterior_samples/simulation_unimodal_I_10_N_1000/parametric/parametric_IRT_stan.rds"
@@ -21,9 +21,11 @@ args <- R.utils::commandArgs(asValue=TRUE)
 ##-----------------------------------------#
 if(is.null(args$outDir)) outDir <- "output/posterior_samples_elaborated/" else dir <- args$outDir
 
-data <- strsplit(args$resFileName, "\\/|.rds")[[1]][3]
+listLength <- length(strsplit(args$resFileName, "\\/|.rds")[[1]])
 
-fileName <- strsplit(args$resFileName, "\\/|.rds")[[1]][5]
+data <- strsplit(args$resFileName, "\\/|.rds")[[1]][listLength -2]
+
+fileName <- strsplit(args$resFileName, "\\/|.rds")[[1]][listLength]
 
 ## parameterization
 param <- strsplit(basename(fileName), "\\_|.rds")[[1]][2]
