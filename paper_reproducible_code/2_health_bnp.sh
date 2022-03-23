@@ -10,18 +10,18 @@ FILES=(models/bnp/*.R)
 
 Rscript 1_runNimbleModels.R  \
 --model=${FILES[$SLURM_ARRAY_TASK_ID]} \
---dirResults=output/posterior_samples \
+--dirResults=/scratch/users/sallypaganin \
 --data=data/data_health.rds \
 --niter=50000 \
---nburnin=5000 \
+--nburnin=25000 \
 --nthin=1 \
 --mode=default
 
 Rscript 1_runNimbleModels.R  \
 --model=${FILES[$SLURM_ARRAY_TASK_ID]} \
---dirResults=output/posterior_samples \
+--dirResults=/scratch/users/sallypaganin \
 --data=data/data_health.rds \
 --niter=50000 \
---nburnin=5000 \
+--nburnin=25000 \
 --nthin=1 \
 --mode=centered

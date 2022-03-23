@@ -3,13 +3,13 @@
 ## Sally Paganin
 ## last update: Feb 10, 2022
 ## R version 4.1.2 (2021-11-01) -- "Bird Hippie"
-## nimble version ??
+## nimble version 12.1
 ##-----------------------------------------#
 args <- R.utils::commandArgs(asValue=TRUE)
 
 # args <- list()
-# args$model <- "models/parametric/parametric_IRT_constrainedItem.R"
-# args$data <- "data/data_health.rds"
+# args$model <- "models/parametric3PL_long/parametric3PL_SI_unconstrained.R"
+# args$data <- "data/data_timss.rds"
 # args$niter <- 100
 # args$nburnin <- 10
 # args$nthin <- 10
@@ -64,6 +64,7 @@ source("R_functions/monitorLogProb.R")
 ####################################
 
 ## Handle data differently if TIMSS (long format)
+
 if(grepl("timss", args$data)){
 	alldata <- readRDS(args$data)
 	data 	<- list(y = alldata$y)
