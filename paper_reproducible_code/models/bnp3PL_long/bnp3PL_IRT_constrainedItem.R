@@ -4,7 +4,7 @@ code <- nimbleCode({
   for(i in 1:NTot) {
       y[i] ~ dbern(pi[i])
       pi[i] <- delta[item[i]] + (1 - delta[item[i]]) * linearReg[i]
-      logit(linearReg[i]) <-  lambda[item[i]]*eta[student[i]] - gamma[item[i]]
+      logit(linearReg[i]) <-  lambda[item[i]]*(eta[student[i]] - beta[item[i]])
   }
 
 
