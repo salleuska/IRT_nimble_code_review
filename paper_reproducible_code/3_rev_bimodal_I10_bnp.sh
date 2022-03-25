@@ -24,18 +24,18 @@ Rscript 1_runNimbleModels.R  \
 --nthin=1 \
 --mode=centered
 
-Rscript 1_runNimbleModels.R  \
---model=${FILES[$SLURM_ARRAY_TASK_ID]} \
---data=data/simulation_bimodal_I_10_N_5000.rds \
---niter=50000 \
---nburnin=5000 \
---nthin=1 \
---mode=default
+# Rscript 1_runNimbleModels.R  \
+# --model=${FILES[$SLURM_ARRAY_TASK_ID]} \
+# --data=data/simulation_bimodal_I_10_N_5000.rds \
+# --niter=50000 \
+# --nburnin=5000 \
+# --nthin=1 \
+# --mode=default
 
-Rscript 1_runNimbleModels.R  \
---model=${FILES[$SLURM_ARRAY_TASK_ID]} \
---data=data/simulation_bimodal_I_10_N_5000.rds \
---niter=50000 \
---nburnin=5000 \
---nthin=1 \
---mode=centered
+# Rscript 1_runNimbleModels.R  \
+# --model=${FILES[$SLURM_ARRAY_TASK_ID]} \
+# --data=data/simulation_bimodal_I_10_N_5000.rds \
+# --niter=50000 \
+# --nburnin=5000 \
+# --nthin=1 \
+# --mode=centered

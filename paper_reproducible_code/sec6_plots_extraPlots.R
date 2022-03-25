@@ -20,7 +20,6 @@ bnpFileName <- "bnp_efficiency.txt"
 ##-----------------------------------------#
 fileList <- list.files("output/mcmc_time", full.names = TRUE)
 
-
 ##-----------------------------------------#
 ## Unimodal
 ##-----------------------------------------#
@@ -39,7 +38,9 @@ unimodalDf <- as.data.frame(do.call(rbind, unimodalList))
 unique(unimodalDf$fileName)
 unique(labelData$R_label)
 
-unimodalDf$ESS_second <- unimodalDf$multiEssItemsAbility/unimodalDf$runningTime
+unimodalDf$ESS_second <- unimodalDf$essCodaLogLik/unimodalDf$runningTime
+unimodalDf$ESS_second <- unimodalDf$essCodaLogPostItemsAbility/unimodalDf$runningTime
+# unimodalDf$ESS_second <- unimodalDf$multiEssItemsAbility/unimodalDf$runningTime
 
 unimodalDf$labels <- gsub("parametric_", "", unimodalDf$fileName)
 ## match R labels to plot labels
@@ -71,6 +72,9 @@ p <-  ggplot(dfParametricEff,  aes_string(x = "Strategy", y= "ESS", fill = "Stra
 
 p
 
+ggsave(filename = "unimodalMultiESS.png", plot = p,
+        width = 30, height = 30 , 
+        dpi = 300, units = unit, device='png')
 ##-----------------------------------------#
 ## Bimodal
 ##-----------------------------------------#
@@ -90,6 +94,8 @@ unique(bimodalDf$fileName)
 unique(labelData$R_label)
 
 bimodalDf$ESS_second <- bimodalDf$multiEssItemsAbility/bimodalDf$runningTime
+# bimodalDf$ESS_second <- bimodalDf$essCodaLogLik/bimodalDf$runningTime
+# bimodalDf$ESS_second <- bimodalDf$essCodaLogPostItemsAbility/bimodalDf$runningTime
 
 bimodalDf$labels <- gsub("parametric_", "", bimodalDf$fileName)
 ## match R labels to plot labels
@@ -120,6 +126,10 @@ p <-  ggplot(dfParametricEff,  aes_string(x = "Strategy", y= "ESS", fill = "Stra
 
 p
 
+ggsave(filename = "bimodalMultiESS.png", plot = p,
+        width = 30, height = 30 , 
+        dpi = 300, units = unit, device='png')
+
 ##-----------------------------------------#
 ## multimodal
 ##-----------------------------------------#
@@ -139,6 +149,8 @@ unique(multimodalDf$fileName)
 unique(labelData$R_label)
 
 multimodalDf$ESS_second <- multimodalDf$multiEssItemsAbility/multimodalDf$runningTime
+# multimodalDf$ESS_second <- multimodalDf$essCodaLogLik/multimodalDf$runningTime
+# multimodalDf$ESS_second <- multimodalDf$essCodaLogPostItemsAbility/multimodalDf$runningTime
 
 multimodalDf$labels <- gsub("parametric_", "", multimodalDf$fileName)
 ## match R labels to plot labels
@@ -171,7 +183,9 @@ p
 
 
 
-
+ggsave(filename = "multimodalMultiESS.png", plot = p,
+        width = 30, height = 30 , 
+        dpi = 300, units = unit, device='png')
 ##-----------------------------------------#
 ##-----------------------------------------#
 ## OLD CODE - NOT RUN

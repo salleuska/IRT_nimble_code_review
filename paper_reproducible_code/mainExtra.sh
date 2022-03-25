@@ -207,14 +207,16 @@ Rscript 2_extractResults.R --resFileName=output/posterior_samples/simulation_mul
 Rscript 2_extractResults.R --resFileName=output/posterior_samples/simulation_multimodal_I_30_N_1000/parametric/parametric_IRT_stan.rds
 Rscript 2_extractResults.R --resFileName=output/posterior_samples/simulation_multimodal_I_30_N_5000/parametric/parametric_IRT_stan.rds
 
-
 Rscript 2_extractResults.R --resFileName=output/posterior_samples/simulation_bimodal_I_10_N_1000/parametric/parametric_IRT_stan.rds
 Rscript 2_extractResults.R --resFileName=output/posterior_samples/simulation_bimodal_I_10_N_5000/parametric/parametric_IRT_stan.rds
 Rscript 2_extractResults.R --resFileName=output/posterior_samples/simulation_bimodal_I_30_N_1000/parametric/parametric_IRT_stan.rds
 Rscript 2_extractResults.R --resFileName=output/posterior_samples/simulation_bimodal_I_30_N_5000/parametric/parametric_IRT_stan.rds
 
-
 Rscript 2_extractResults.R --resFileName=output/posterior_samples/simulation_unimodal_I_10_N_1000/parametric/parametric_IRT_stan.rds
 Rscript 2_extractResults.R --resFileName=output/posterior_samples/simulation_unimodal_I_10_N_5000/parametric/parametric_IRT_stan.rds
 Rscript 2_extractResults.R --resFileName=output/posterior_samples/simulation_unimodal_I_30_N_1000/parametric/parametric_IRT_stan.rds
 Rscript 2_extractResults.R --resFileName=output/posterior_samples/simulation_unimodal_I_30_N_5000/parametric/parametric_IRT_stan.rds
+
+##################
+## TMP
+Rscript 2_extractResults.R --resFileName=output/posterior_samples/simulation_unimodal_I_30_N_5000/parametric/parametric_SI_constrainedItem.rds

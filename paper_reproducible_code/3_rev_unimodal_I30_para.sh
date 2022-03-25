@@ -39,3 +39,4 @@ Rscript 1_runNimbleModels.R  \
 --nburnin=5000 \
 --nthin=1 \
 --mode=centered
+

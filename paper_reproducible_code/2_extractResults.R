@@ -171,7 +171,7 @@ if(modelType == "parametric"){
 
 
 ## adding WAIC
-WAIC <- 0.0
+WAIC <- NA
 
 if(modelType == "parametric"){ 
   WAIC <- resObj$modelWAIC
