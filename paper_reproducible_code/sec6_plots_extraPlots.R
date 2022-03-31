@@ -35,17 +35,17 @@ for(i in 1:length(unimodalFiles)){
 
 unimodalDf <- as.data.frame(do.call(rbind, unimodalList))
 
-unique(unimodalDf$fileName)
-unique(labelData$R_label)
+# unique(unimodalDf$fileName)
+# unique(labelData$R_label)
 
-unimodalDf$ESS_second <- unimodalDf$essCodaLogLik/unimodalDf$runningTime
-unimodalDf$ESS_second <- unimodalDf$essCodaLogPostItemsAbility/unimodalDf$runningTime
-# unimodalDf$ESS_second <- unimodalDf$multiEssItemsAbility/unimodalDf$runningTime
+# unimodalDf$ESS_second <- unimodalDf$essCodaLogLik/unimodalDf$runningTime
+# unimodalDf$ESS_second <- unimodalDf$essCodaLogPostItemsAbility/unimodalDf$runningTime
+unimodalDf$ESS_second <- unimodalDf$multiEssItemsAbility/unimodalDf$runningTime
 
 unimodalDf$labels <- gsub("parametric_", "", unimodalDf$fileName)
 ## match R labels to plot labels
 unimodalDf$labels <- labelData[match(unimodalDf$labels, labelData$R_label), ]$plot_label
-unimodalDf[is.na(unimodalDf$labels), ] <- NULL
+unimodalDf <- droplevels(unimodalDf[!is.na(unimodalDf$labels), ])
 
 ## data frame for plotting
 dfParametricEff <- data.frame(unimodalDf[, c("labels", "ESS_second", "simulation")])
@@ -75,6 +75,22 @@ p
 ggsave(filename = "unimodalMultiESS.png", plot = p,
         width = 30, height = 30 , 
         dpi = 300, units = unit, device='png')
+
+
+ggplot(dfParametricEff, 
+      aes(x = Strategy, y= ESS, group = Simulation, color = Simulation)) +
+  geom_line() + geom_point() +
+  ylab("min ESS/second (total time)") + xlab("") + 
+  theme_bw() + 
+  theme(axis.text.x = element_text(angle = 45, vjust = 0.5))
+
+ggplot(dfParametricEff, 
+      aes(x = Simulation, y= ESS, group = Strategy, color = Strategy)) +
+  geom_line() + geom_point() +
+  ylab("min ESS/second (total time)") + xlab("") + 
+  theme_bw() + 
+  theme(axis.text.x = element_text(angle = 45, vjust = 0.5))
+
 ##-----------------------------------------#
 ## Bimodal
 ##-----------------------------------------#
