@@ -1,7 +1,7 @@
 ##-----------------------------------------#
 ## Bayesian semiparametric Item Response Theory models using NIMBLE 
 ## Sally Paganin
-## last update: June, 22 2021
+## last update: March 2022
 ## R version 4.1.0 (2021-05-18) -- "Camp Pontanezen"
 ## nimble version 0.11.1
 ##-----------------------------------------#
@@ -39,8 +39,8 @@ unimodalDf <- as.data.frame(do.call(rbind, unimodalList))
 # unique(labelData$R_label)
 
 # unimodalDf$ESS_second <- unimodalDf$essCodaLogLik/unimodalDf$runningTime
-# unimodalDf$ESS_second <- unimodalDf$essCodaLogPostItemsAbility/unimodalDf$runningTime
-unimodalDf$ESS_second <- unimodalDf$multiEssItemsAbility/unimodalDf$runningTime
+unimodalDf$ESS_second <- unimodalDf$essCodaLogPostItemsAbility/unimodalDf$runningTime
+# unimodalDf$ESS_second <- unimodalDf$multiEssItemsAbility/unimodalDf$runningTime
 
 unimodalDf$labels <- gsub("parametric_", "", unimodalDf$fileName)
 ## match R labels to plot labels
@@ -51,6 +51,12 @@ unimodalDf <- droplevels(unimodalDf[!is.na(unimodalDf$labels), ])
 dfParametricEff <- data.frame(unimodalDf[, c("labels", "ESS_second", "simulation")])
 
 colnames(dfParametricEff) <- c("Strategy", "ESS", "Simulation")
+levels(dfParametricEff$Simulation) <- c("N = 2000, I = 15", 
+                                        "N = 1000, I = 10", 
+                                        "N = 5000, I = 10", 
+                                        "N = 1000, I = 30", 
+                                        "N = 5000, I = 30")
+
 
 dfParametricEff$Strategy  <- factor(dfParametricEff$Strategy, levels = labelData$plot_label)
 dfParametricEff$Simulation <- factor(dfParametricEff$Simulation)
@@ -77,19 +83,29 @@ ggsave(filename = "unimodalMultiESS.png", plot = p,
         dpi = 300, units = unit, device='png')
 
 
-ggplot(dfParametricEff, 
+p1 <- ggplot(dfParametricEff, 
       aes(x = Strategy, y= ESS, group = Simulation, color = Simulation)) +
   geom_line() + geom_point() +
   ylab("min ESS/second (total time)") + xlab("") + 
   theme_bw() + 
-  theme(axis.text.x = element_text(angle = 45, vjust = 0.5))
+  theme(axis.text.x = element_text(angle = 45, vjust = 0.5), 
+            legend.position = "bottom")
 
-ggplot(dfParametricEff, 
+ggsave(filename = "unimodalMultiESS2.png", plot = p1,
+        width = 20, height = 12 , 
+        dpi = 300, units = unit, device='png')
+
+p2 <- ggplot(dfParametricEff, 
       aes(x = Simulation, y= ESS, group = Strategy, color = Strategy)) +
   geom_line() + geom_point() +
   ylab("min ESS/second (total time)") + xlab("") + 
   theme_bw() + 
-  theme(axis.text.x = element_text(angle = 45, vjust = 0.5))
+  theme(axis.text.x = element_text(angle = 45, vjust = 0.5),
+      legend.position = "bottom")
+
+ggsave(filename = "unimodalMultiESS3.png", plot = p2,
+        width = 20, height = 12 , 
+        dpi = 300, units = unit, device='png')
 
 ##-----------------------------------------#
 ## Bimodal
@@ -116,18 +132,21 @@ bimodalDf$ESS_second <- bimodalDf$multiEssItemsAbility/bimodalDf$runningTime
 bimodalDf$labels <- gsub("parametric_", "", bimodalDf$fileName)
 ## match R labels to plot labels
 bimodalDf$labels <- labelData[match(bimodalDf$labels, labelData$R_label), ]$plot_label
-bimodalDf[is.na(bimodalDf$labels), ] <- NULL
+bimodalDf <- droplevels(bimodalDf[!is.na(bimodalDf$labels), ])
 
 ## data frame for plotting
 dfParametricEff <- data.frame(bimodalDf[, c("labels", "ESS_second", "simulation")])
 
 colnames(dfParametricEff) <- c("Strategy", "ESS", "Simulation")
+levels(dfParametricEff$Simulation) <- c("N = 2000, I = 15", 
+                                        "N = 1000, I = 10", 
+                                        "N = 5000, I = 10", 
+                                        "N = 1000, I = 30", 
+                                        "N = 5000, I = 30")
 
 dfParametricEff$Strategy  <- factor(dfParametricEff$Strategy, levels = labelData$plot_label)
 dfParametricEff$Simulation <- factor(dfParametricEff$Simulation)
 
-str(dfParametricEff)
-dfParametricEff$ESS
 ylab <- paste0("min ESS/second (total time)")
 p <-  ggplot(dfParametricEff,  aes_string(x = "Strategy", y= "ESS", fill = "Strategy")) +
       geom_bar(position= position_dodge(),stat='identity',colour = "black",
@@ -144,6 +163,30 @@ p
 
 ggsave(filename = "bimodalMultiESS.png", plot = p,
         width = 30, height = 30 , 
+        dpi = 300, units = unit, device='png')
+
+p1 <- ggplot(dfParametricEff, 
+      aes(x = Strategy, y= ESS, group = Simulation, color = Simulation)) +
+  geom_line() + geom_point() +
+  ylab("min ESS/second (total time)") + xlab("") + 
+  theme_bw() + 
+  theme(axis.text.x = element_text(angle = 45, vjust = 0.5), 
+            legend.position = "bottom")
+p1
+ggsave(filename = "bimodalMultiESS2.png", plot = p1,
+        width = 20, height = 12 , 
+        dpi = 300, units = unit, device='png')
+
+p2 <- ggplot(dfParametricEff, 
+      aes(x = Simulation, y= ESS, group = Strategy, color = Strategy)) +
+  geom_line() + geom_point() +
+  ylab("min ESS/second (total time)") + xlab("") + 
+  theme_bw() + 
+  theme(axis.text.x = element_text(angle = 45, vjust = 0.5),
+      legend.position = "bottom")
+p2
+ggsave(filename = "bimodalMultiESS3.png", plot = p2,
+        width = 20, height = 12 , 
         dpi = 300, units = unit, device='png')
 
 ##-----------------------------------------#
@@ -171,12 +214,17 @@ multimodalDf$ESS_second <- multimodalDf$multiEssItemsAbility/multimodalDf$runnin
 multimodalDf$labels <- gsub("parametric_", "", multimodalDf$fileName)
 ## match R labels to plot labels
 multimodalDf$labels <- labelData[match(multimodalDf$labels, labelData$R_label), ]$plot_label
-multimodalDf[is.na(multimodalDf$labels), ] <- NULL
+multimodalDf <- droplevels(multimodalDf[!is.na(multimodalDf$labels), ])
 
 ## data frame for plotting
 dfParametricEff <- data.frame(multimodalDf[, c("labels", "ESS_second", "simulation")])
 
 colnames(dfParametricEff) <- c("Strategy", "ESS", "Simulation")
+levels(dfParametricEff$Simulation) <- c("N = 2000, I = 15", 
+                                        "N = 1000, I = 10", 
+                                        "N = 5000, I = 10", 
+                                        "N = 1000, I = 30", 
+                                        "N = 5000, I = 30")
 
 dfParametricEff$Strategy  <- factor(dfParametricEff$Strategy, levels = labelData$plot_label)
 dfParametricEff$Simulation <- factor(dfParametricEff$Simulation)
@@ -202,7 +250,47 @@ p
 ggsave(filename = "multimodalMultiESS.png", plot = p,
         width = 30, height = 30 , 
         dpi = 300, units = unit, device='png')
+
+p1 <- ggplot(dfParametricEff, 
+      aes(x = Strategy, y= ESS, group = Simulation, color = Simulation)) +
+  geom_line() + geom_point() +
+  ylab("min ESS/second (total time)") + xlab("") + 
+  theme_bw() + 
+  theme(axis.text.x = element_text(angle = 45, vjust = 0.5), 
+            legend.position = "bottom")
+p1
+ggsave(filename = "multimodalMultiESS2.png", plot = p1,
+        width = 20, height = 12 , 
+        dpi = 300, units = unit, device='png')
+
+p2 <- ggplot(dfParametricEff, 
+      aes(x = Simulation, y= ESS, group = Strategy, color = Strategy)) +
+  geom_line() + geom_point() +
+  ylab("min ESS/second (total time)") + xlab("") + 
+  theme_bw() + 
+  theme(axis.text.x = element_text(angle = 45, vjust = 0.5),
+      legend.position = "bottom")
+p2
+ggsave(filename = "multimodalMultiESS3.png", plot = p2,
+        width = 20, height = 12 , 
+        dpi = 300, units = unit, device='png')
+
 ##-----------------------------------------#
+
+
+# xx <- readRDS("output/posterior_samples_elaborated/simulation_unimodal/parametric/parametric_SI_unconstrained.rds")
+# plot(xx$otherParSamp[, "myLogLik"], type = "l")
+# plot(xx$otherParSamp[, "myLogProbAll"], type = "l")
+# plot(xx$otherParSamp[, "myLogProbSome"], type = "l")
+
+# coda::effectiveSize(xx$otherParSamp[, "myLogProbSome"])
+# coda::effectiveSize(xx$otherParSamp[, "myLogProbAll"])
+# coda::effectiveSize(xx$otherParSamp[, "myLogLik"])
+
+
+
+
+
 ##-----------------------------------------#
 ## OLD CODE - NOT RUN
 ##-----------------------------------------#

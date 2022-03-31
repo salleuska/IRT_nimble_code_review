@@ -219,4 +219,6 @@ Rscript 2_extractResults.R --resFileName=output/posterior_samples/simulation_uni
 
 ##################
 ## TMP
-Rscript 2_extractResults.R --resFileName=output/posterior_samples/simulation_unimodal_I_30_N_5000/parametric/parametric_SI_constrainedItem.rds
+# Rscript 2_extractResults.R --resFileName=output/posterior_samples/simulation_unimodal_I_30_N_5000/parametric/parametric_SI_constrainedAbilities.rds
+# Rscript 2_extractResults.R --resFileName=output/posterior_samples/simulation_unimodal_I_30_N_5000/parametric/parametric_SI_constrainedItem.rds
+# Rscript 2_extractResults.R --resFileName=output/posterior_samples/simulation_unimodal_I_10_N_1000/parametric/parametric_SI_unconstrained_centered.rds
