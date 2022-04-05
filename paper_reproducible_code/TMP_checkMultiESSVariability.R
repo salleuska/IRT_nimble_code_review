@@ -1,11 +1,24 @@
 ####################################
-#### TO FINISH!! ########
 ####################################
 ## Run a model multiple times and saves the multiESS
 ## using the small simulation
 
 library(nimble)
 library(mcmcse)
+source("R_functions/rescalingFunctions.R")
+
+args <- R.utils::commandArgs(asValue=TRUE)
+
+
+MCMCcontrol 		<- list()
+MCMCcontrol$niter 	<- as.numeric(args$niter)
+MCMCcontrol$nburnin <- as.numeric(args$nburnin)
+
+# ## MCMC settings
+# MCMCcontrol 		<- list()
+# MCMCcontrol$niter 	<- 10000
+# MCMCcontrol$nburnin <- 1000
+
 
 data 	<- list(y = readRDS("data/simulation_unimodal_I_10_N_1000.rds"))
 
@@ -30,10 +43,6 @@ mcmcConf$addMonitors("eta")
 mcmc <- buildMCMC(mcmcConf)	
 
 
-## MCMC settings
-MCMCcontrol 		<- list()
-MCMCcontrol$niter 	<- 10000
-MCMCcontrol$nburnin <- 2000
 
 
 compilationTime <- system.time({
@@ -51,13 +60,45 @@ compilationTime <- system.time({
 ##---------------------------------------------------##
 ## Run MCMC 
 ##---------------------------------------------------##
-runningTime <- system.time({try(
-	res <- runMCMC(Cmcmc, 
-				   niter 	= MCMCcontrol$niter, 
-				   nburnin  = MCMCcontrol$nburnin,
-				   setSeed  = seed))
-	if(inherits(res, 'try-error')) {
-  		warning(paste0("There was a problem running nimble MCMC."))
-  }
-})
+nTimes <- 20
+out <- numeric(20)
+
+for(i in 1:nTimes){
+
+	runningTime <- system.time({try(
+		res <- runMCMC(Cmcmc, 
+					   niter 	= MCMCcontrol$niter, 
+					   nburnin  = MCMCcontrol$nburnin, 
+					   setSeed = i))
+		if(inherits(res, 'try-error')) {
+	  		warning(paste0("There was a problem running nimble MCMC."))
+	  }
+	})
+
+
+	modelRes <- posteriorRescalingBeta(samples  = res[, -grep("^eta", colnames(res))],
+	                                   samples2 = res[, grep("^eta", colnames(res))],
+	                                   thinEta  = 1, 
+					                  rescale  = TRUE)
+
+	## matrices for ESS evaluations
+	onlyItems <- cbind(modelRes[grepl("lambda", names(modelRes))][[1]],
+	              modelRes[grepl("beta", names(modelRes))][[1]])
+
+	itemsAndAbility <- cbind(onlyItems, modelRes$etaSamp)
+	itemsAndAbilityMultiESS <- itemsAndAbility[, !grepl("(beta\\[1\\])|(lambda\\[1\\])", colnames(itemsAndAbility))]
+
+	try(out[i] <- mcmcse::multiESS(itemsAndAbilityMultiESS, 
+	                                            method = "bm", r = 1, 
+	                                            adjust = FALSE))
+}
+
+save(out, file = paste0("output/multiESS_", MCMCcontrol$niter, ".rds"))
+
+
+
+
+
+
+
 

@@ -20,7 +20,6 @@ args <- R.utils::commandArgs(asValue=TRUE)
 ## load library and functions
 library(rstan)
 library(reshape2)
-
 ##----------------------------------##
 cat("Warning: using burning as n. warmup iterations. \n
 	N. iterations will be nwarmup + nsamples")
