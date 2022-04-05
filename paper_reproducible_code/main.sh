@@ -284,10 +284,14 @@ done
 
 Rscript 3_simulateFromDPmeasure.R \
 --dataName="simulation_unimodal" \
---modelName="bnp_SI_unconstrained"
+--modelName="bnp_IRT_unconstrained"
 
 Rscript 3_simulateFromDPmeasure.R \
 --dataName="simulation_bimodal" \
+--modelName="bnp_IRT_unconstrained"
+
+Rscript 3_simulateFromDPmeasure.R \
+--dataName="simulation_multimodal" \
 --modelName="bnp_IRT_unconstrained"
 
 # Rscript 3_simulateFromDPmeasure.R \

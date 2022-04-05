@@ -21,7 +21,7 @@ bnpFileName <- "bnp_efficiency.txt"
 fileList <- list.files("output/mcmc_time", full.names = TRUE)
 
 ##-----------------------------------------#
-## Unimodal
+## Unimodal - extraSimulation
 ##-----------------------------------------#
 
 unimodalFiles <- fileList[grep("unimodal", fileList)]
@@ -287,118 +287,8 @@ ggsave(filename = "multimodalMultiESS3.png", plot = p2,
 # coda::effectiveSize(xx$otherParSamp[, "myLogProbAll"])
 # coda::effectiveSize(xx$otherParSamp[, "myLogLik"])
 
-
-
-
-
 ##-----------------------------------------#
 ## OLD CODE - NOT RUN
 ##-----------------------------------------#
 ## Plot Figure 2a
 ##-----------------------------------------#
-ylab <- paste0("min ESS/second (total time)")
-p <-  ggplot(dfParametricEff,  aes_string(x = "Strategy", y= "ESS", fill = "Strategy")) +
-      geom_bar(position= position_dodge(),stat='identity',colour = "black",
-       width = 0.8) +
-      facet_wrap(~ Simulation, ncol=2, scales='fixed') +
-      ylab("min ESS/second (total time)") + xlab("") + 
-      ylim(c(0,6)) + 
-      theme(legend.position = "none") +
-      coord_flip() +
-      scale_fill_manual(values = labelData$colors) +
-      scale_x_discrete(limits = rev(levels(dfParametricEff$Strategy))) 
-
-p
-
-
-ggsave(filename = "figures/fig3a_simulation_efficiencies_multiESS.png", plot = p,
-        width = plot_width, height = plot_height , dpi = 300, units = unit, device='png')
-
-##-----------------------------------------#
-## Plot Figure 2b
-## Comparison with sampling times
-##-----------------------------------------#
-bimodal$ESS_second2 <- bimodal$multiEssItemsAbility/bimodal$samplingTime
-unimodal$ESS_second2 <- unimodal$multiEssItemsAbility/unimodal$samplingTime
-
-dfParametricEffSampling <- dfParametricEff
-dfParametricEffSampling$ESS <- c(unimodal$ESS_second2, bimodal$ESS_second2)
-
-
-ylabel <- 'min ESS/second'
-title <- paste0("Minimum effective sample size per second (sampling time)")
-p <-  ggplot(dfParametricEffSampling,  aes_string(x = "Strategy", y= "ESS", fill = "Strategy")) +
-      geom_bar(position= position_dodge(),stat='identity',colour = "black", width = 0.8) +
-      facet_wrap(~ Simulation, ncol=2, scales='fixed') +
-      ylab("min ESS/second (sampling time)") + xlab("") + 
-      theme(legend.position = "none") +
-      coord_flip() +
-      scale_x_discrete(limits = rev(levels(dfParametricEffSampling$Strategy))) +
-      scale_fill_manual(values = labelData$colors) 
-p
-
-ggsave(filename = "figures/fig3b_simulation_efficiencies_sampling_multiESS.png", plot = p,
-        width = plot_width, height = plot_height , dpi = 300, units = unit, device='png')
-
-##-----------------------------------------#
-## Efficiency fof bnp vs parametric - simulation
-##-----------------------------------------#
-
-bnpUnimodal <- read.table(paste0("output/mcmc_time/simulation_unimodal/", bnpFileName), header = T)
-bnpBimodal  <- read.table(paste0("output/mcmc_time/simulation_bimodal/", bnpFileName), header = T)
-
-bnpUnimodal$ESS_second <- bnpUnimodal$multiEssItemsAbility/bnpUnimodal$runningTime
-bnpBimodal$ESS_second <- bnpBimodal$multiEssItemsAbility/bnpBimodal$runningTime
-
-bnpBimodal$simulation <- "Bimodal simulation"
-bnpUnimodal$simulation <- "Unimodal simulation"
-
-bnpUnimodal$labels <- gsub("bnp_", "", bnpUnimodal$fileName)
-bnpBimodal$labels <- gsub("bnp_", "", bnpBimodal$fileName)
-
-## match R labels to plot labels
-bnpUnimodal$labels <- droplevels(labelData[match(bnpUnimodal$labels, labelData$R_label), ]$plot_label)
-bnpBimodal$labels  <- droplevels(labelData[match(bnpBimodal$labels, labelData$R_label), ]$plot_label)
-
-## select parametric models with bnp equivalent and create data frame for plotting
-dfParametricBnp <- data.frame(rbind(unimodal[which(unimodal$label %in% levels(bnpUnimodal$labels)), 
-							c("labels", "ESS_second", "simulation")], 
-						   bimodal[which(bimodal$label %in% levels(bnpBimodal$labels)), 
-							c("labels", "ESS_second", "simulation")])) 
-dfParametricBnp <- droplevels(dfParametricBnp)
-dfParametricBnp$model <- "Parametric"
-
-bnpUnimodal$model <- "Semiparametric"						  
-bnpBimodal$model  <- "Semiparametric"						  
-
-dfParametricBnp <- rbind(dfParametricBnp, 
-                         bnpUnimodal[, c("labels", "ESS_second", "simulation", "model")],
- 				                 bnpBimodal[, c("labels", "ESS_second", "simulation", "model")])
-
-
-colnames(dfParametricBnp) <- c("Strategy", "ESS", "Simulation", "Model")
-dfParametricBnp$Strategy  <- droplevels(factor(dfParametricBnp$Strategy, levels = labelData$plot_label))
-## set level order
-dfParametricBnp$Simulation <- factor(dfParametricBnp$Simulation, levels = c("Unimodal simulation", "Bimodal simulation"))
-
-colorsParametricBnp <- labelData$colors[match(levels(dfParametricBnp$Strategy), labelData$plot_label)]
-##-----------------------------------------#
-## Plot Figure 3a
-##-----------------------------------------#
-
-ylabel <- 'Effective sample size per second'
-title <- paste0("Minimum effective sample size per second (total time)")
-
-p <-  ggplot(dfParametricBnp,  aes_string(x = "Strategy", y= "ESS", fill = "Strategy")) +
-      geom_bar(position= position_dodge(),stat='identity',colour = "black",
-       width = 0.8) +
-      facet_wrap(~ Model + Simulation,ncol=2, scales='fixed') +
-      ylab("min ESS/second (total time)") + xlab("") + 
-      theme(legend.position = "none") +
-      coord_flip() +
-      scale_x_discrete(limits = rev(levels(dfParametricBnp$Strategy))) +
-      scale_fill_manual(values = colorsParametricBnp) 
-p
-
-ggsave(filename = "figures/fig4_simulation_efficiencies_bnp_multiESS.png", plot = p,
-        width = plot_width, height = plot_height/2*3 , dpi = 300, units = unit, device='png')
