@@ -66,7 +66,7 @@ if(grepl("timss", dataName)){
 }
 
 ## create and compile model
-model  <- nimbleModel(code2PL, constants = constants, data = data, inits = inits)
+model  <- nimbleModel(code, constants = constants, data = data, inits = inits)
 cmodel <- compileNimble(model)
 ## simulate
 cmodel$simulate()

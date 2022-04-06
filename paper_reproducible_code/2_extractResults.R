@@ -173,7 +173,8 @@ if(modelType == "parametric"){
 ## adding WAIC
 WAIC <- NA
 
-if(modelType == "parametric"){ 
+#if(modelType == "parametric"){ 
+if(modelType %in% c("parametric", "parametric3PL", "bnp3PL")){ 
   WAIC <- resObj$modelWAIC
 } 
 
