@@ -79,8 +79,8 @@ bnpTimss2  <- read.table(paste0("output/mcmc_time/data_timss/bnp3PL_efficiency.t
 bnpTimss2$ESS_second <- bnpTimss2$multiEssItemsAbility/bnpTimss2$runningTime
 bnpTimss$ESS_second <- bnpTimss$multiEssItemsAbility/bnpTimss$runningTime
 
-paraTimss$simulation  <- "2PL"
-paraTimss2$simulation <- "3PL"
+bnpTimss$simulation  <- "2PL"
+bnpTimss2$simulation <- "3PL"
 
 bnpTimss2$labels <- gsub("bnp3PL_", "", bnpTimss2$fileName)
 bnpTimss$labels <- gsub("bnp_", "", bnpTimss$fileName)
@@ -96,10 +96,7 @@ dfBnpEff <- data.frame(rbind(bnpTimss2[, c("labels", "ESS_second", "simulation",
                                     bnpTimss[, c("labels", "ESS_second", "simulation","model")]))
 
 colnames(dfBnpEff) <- c("Strategy", "ESS", "Simulation", "Model")
-
-dfBnpEff$Strategy  <- droplevels(factor(dfBnpEff$Strategy, levels = labelData$plot_label))
-dfBnpEff <- droplevels(dfBnpEff[-grep("constrained item", dfBnpEff$Strategy), ])
-
+dfBnpEff <- droplevels(dfBnpEff)
 colorsBnp <- labelData$colors[match(levels(dfBnpEff$Strategy), labelData$plot_label)]
 ##-----------------------------------------#
 ## Plot Figure 5b
@@ -111,7 +108,7 @@ title <- paste0("Minimum effective sample size per second (total time)")
 p <-  ggplot(dfBnpEff,  aes_string(x = "Strategy", y= "ESS", fill = "Strategy")) +
       geom_bar(position= position_dodge(),stat='identity',colour = "black",
        width = 0.8) +
-      facet_wrap(~ Model + Simulation,ncol=2, scales='free_x') +
+      facet_wrap(~ Model + Simulation,ncol=2, scales='fixed') +
       ylab("min ESS/second (total time)") + xlab("") + 
       theme(legend.position = "none") +
       coord_flip() +

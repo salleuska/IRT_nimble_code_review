@@ -105,6 +105,7 @@ pEtaMeanUni <- ggplot(dfEtaMeansUni, aes(x=mean, color = Model)) +
 			            aes(col = 'True density'),lwd = 1, lty = 3) 
 
 pEtaMeanUni <- pEtaMeanUni + theme(legend.title = element_blank())
+pEtaMeanUni
 
 ggsave(filename = "figures/unimodal_posterior_means.png", plot = pEtaMeanUni,
         width = plot_width, height = plot_height , dpi = 300, units = unit, device='png')
@@ -112,9 +113,9 @@ ggsave(filename = "figures/unimodal_posterior_means.png", plot = pEtaMeanUni,
 ## Density - DP Measure
 ##-----------------------------------------#
 
-dfEtaDensity <- data.frame(grid            = unimodalRes$grid, 
-		        		   semiparametric  = apply(unimodalRes$densityDPMeasure, 2, mean),
-    		    		   parametric 	   = apply(unimodalRes$densitySamplesPara, 2, mean))
+dfEtaDensity <- data.frame(grid  = unimodalRes$grid, 
+		              semiparametric  = apply(unimodalRes$densityDPMeasure, 2, mean),
+    		    	      parametric      = apply(unimodalRes$densitySamplesPara, 2, mean))
 
 dfEtaDensity$trueDensity <- dnorm(dfEtaDensity$grid, mean = 0, sd = 1.25)
 
@@ -284,9 +285,9 @@ ggsave(filename = "figures/bimodal_posterior_means.png", plot = pEtaMeanBi,
 ## Density - DP Measure
 ##-----------------------------------------#
 
-dfEtaDensity <- data.frame(grid            = bimodalRes$grid, 
-		        		   semiparametric  = apply(bimodalRes$densityDPMeasure, 2, mean),
-    		    		   parametric 	   = apply(bimodalRes$densitySamplesPara, 2, mean))
+dfEtaDensity <- data.frame(grid = bimodalRes$grid, 
+        semiparametric  = apply(bimodalRes$densityDPMeasure, 2, mean),
+        parametric 	= apply(bimodalRes$densitySamplesPara, 2, mean))
 
 dfEtaDensity$trueDensity <- 0.5*dnorm(dfEtaDensity$grid, -2, sd = 1.25) + 0.5*dnorm(dfEtaDensity$grid, 2, sd = 1.25)
 

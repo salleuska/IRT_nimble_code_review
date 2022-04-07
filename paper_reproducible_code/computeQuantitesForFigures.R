@@ -24,7 +24,7 @@ grid <- seq(-8, 8, len = 400)
 
 trueValues <- list(beta   = beta0,
 		   		   lambda = lambda0,
-				   eta    = etaAbility)
+				     eta    = etaAbility)
 
 bestModel <- modelData$model[modelData$data == dataName]
 
