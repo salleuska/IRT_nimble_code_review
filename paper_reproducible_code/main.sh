@@ -282,20 +282,18 @@ done
 ## Using more efficient MCMC strategies for each 
 ## simulated scenario
 
-### RUN  ON LAPTOT - APR 05 6.08 PM
 # Rscript 3_simulateFromDPmeasure.R \
 # --dataName="simulation_unimodal" \
 # --modelName="bnp_IRT_unconstrained"
 
-Rscript 3_simulateFromDPmeasure.R \
---dataName="simulation_bimodal" \
---modelName="bnp_IRT_unconstrained"
+# Rscript 3_simulateFromDPmeasure.R \
+# --dataName="simulation_bimodal" \
+# --modelName="bnp_IRT_unconstrained"
 
-Rscript 3_simulateFromDPmeasure.R \
---dataName="simulation_multimodal" \
---modelName="bnp_IRT_unconstrained"
+# Rscript 3_simulateFromDPmeasure.R \
+# --dataName="simulation_multimodal" \
+# --modelName="bnp_IRT_unconstrained"
 
-### RUNNING ON THE SERVER - APR 05 6.08 PM
 # Rscript 3_simulateFromDPmeasure.R \
 # --dataName="data_health" \
 # --modelName="bnp_IRT_unconstrained"
@@ -303,6 +301,11 @@ Rscript 3_simulateFromDPmeasure.R \
 # Rscript 3_simulateFromDPmeasure.R \
 # --dataName="data_timss" \
 # --modelName="bnp_SI_unconstrained_centered"
+
+## RUNNING ON THE SERVE APR 7 
+# Rscript 3_simulateFromDPmeasure.R \
+# --dataName="data_timss" \
+# --modelName="bnp3PL_IRT_unconstrained"
 
 #############################################
 ## 4) Make plots

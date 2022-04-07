@@ -56,7 +56,7 @@ modelData <- data.frame(data = c("simulation_unimodal",
 								  "simulation_bimodal", 
 								  "data_health",
 								  "data_timss"),
-						model = c("SI_unconstrained", 
+						model = c("IRT_unconstrained", 
 								  "IRT_unconstrained", 
 								  "IRT_unconstrained",
 								  "SI_unconstrained_centered"))
