@@ -80,14 +80,12 @@ bnpUpper <-   list(beta   = apply(bnpModel$betaSamp, 2, function(x) ci(x,ci = 0.
 ## - using samples from the DP
 ## - parametric counterpart
 ##------------------------------------------------------------#
-
 niter <- nrow(paraModel$etaSamp)
-indices <- seq(10, 45000, by = 10)
-
+# 
 ## Samples for parametric density
 densitySamplesPara <- matrix(0, ncol = length(grid), nrow = niter)
-muParaSamples <- paraModel$otherParSamp[indices ,"mu"]
-s2ParaSamples <- paraModel$otherParSamp[indices ,"s2.eta"]
+muParaSamples <- paraModel$otherParSamp[ ,"mu"]
+s2ParaSamples <- paraModel$otherParSamp[ ,"s2.eta"]
 
 for(i in 1:niter){
   rescGrid <- paraModel$scaleShiftEta[i]*grid -  paraModel$locationShiftEta[i]
@@ -102,7 +100,7 @@ bnpG0 <- readRDS(paste0("output/posterior_samples_elaborated/", dataName, "/DPG0
 densityDPMeasure <- matrix(0, ncol = length(grid), nrow = length(bnpG0))
 
 for(i in seq_len(length(bnpG0))) {  
-  	rescGrid <- bnpModel$scaleShiftEta[i]*grid -  bnpModel$locationShiftEta[i]
+  	rescGrid <- bnpModel$scaleShiftEta[i]*grid + bnpModel$locationShiftEta[i]
 
     densityDPMeasure[i, ] <- sapply(rescGrid,
                 function(x)(
@@ -236,12 +234,11 @@ bnpUpper <-   list(beta   = apply(bnpModel$betaSamp, 2, function(x) ci(x,ci = 0.
 ##------------------------------------------------------------#
 
 niter <- nrow(paraModel$etaSamp)
-indices <- seq(10, 45000, by = 10)
 
 ## Samples for parametric density
 densitySamplesPara <- matrix(0, ncol = length(grid), nrow = niter)
-muParaSamples <- paraModel$otherParSamp[indices ,"mu"]
-s2ParaSamples <- paraModel$otherParSamp[indices ,"s2.eta"]
+muParaSamples <- paraModel$otherParSamp[ ,"mu"]
+s2ParaSamples <- paraModel$otherParSamp[ ,"s2.eta"]
 
 for(i in 1:niter){
   rescGrid <- paraModel$scaleShiftEta[i]*grid + paraModel$locationShiftEta[i]
@@ -391,12 +388,11 @@ bnpUpper <-   list(beta   = apply(bnpModel$betaSamp, 2, function(x) ci(x,ci = 0.
 ##------------------------------------------------------------#
 
 niter <- nrow(paraModel$etaSamp)
-indices <- seq(10, 45000, by = 10)
 
 ## Samples for parametric density
 densitySamplesPara <- matrix(0, ncol = length(grid), nrow = niter)
-muParaSamples <- paraModel$otherParSamp[indices ,"mu"]
-s2ParaSamples <- paraModel$otherParSamp[indices ,"s2.eta"]
+muParaSamples <- paraModel$otherParSamp[ ,"mu"]
+s2ParaSamples <- paraModel$otherParSamp[ ,"s2.eta"]
 
 for(i in 1:niter){
   # rescGrid <- paraModel$scaleShiftEta[i]*grid -  paraModel$locationShiftEta[i]
@@ -533,12 +529,11 @@ bnpUpper <-   list(beta   = apply(bnpModel$betaSamp, 2, function(x) ci(x,ci = 0.
 ## - parametric counterpart
 ##------------------------------------------------------------#
 niter <- nrow(paraModel$etaSamp)
-indices <- seq(10, 45000, by = 10)
 
 ## Samples for parametric density
 densitySamplesPara <- matrix(0, ncol = length(grid), nrow = niter)
-muParaSamples <- paraModel$otherParSamp[indices ,"mu"]
-s2ParaSamples <- paraModel$otherParSamp[indices ,"s2.eta"]
+muParaSamples <- paraModel$otherParSamp[ ,"mu"]
+s2ParaSamples <- paraModel$otherParSamp[ ,"s2.eta"]
 
 for(i in 1:niter){
   rescGrid <- paraModel$scaleShiftEta[i]*grid -  paraModel$locationShiftEta[i]
