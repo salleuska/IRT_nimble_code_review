@@ -24,9 +24,9 @@ unimodal$ESS_second <- unimodal$multiEssItemsAbility/unimodal$runningTime
 bimodal$ESS_second  <- bimodal$multiEssItemsAbility/bimodal$runningTime
 multimodal$ESS_second  <- multimodal$multiEssItemsAbility/multimodal$runningTime
 
+unimodal$simulation     <- "Unimodal simulation"
 bimodal$simulation      <- "Bimodal simulation"
 multimodal$simulation   <- "Multimodal simulation"
-unimodal$simulation     <- "Unimodal simulation"
 
 unimodal$labels <- gsub("parametric_", "", unimodal$fileName)
 bimodal$labels  <- gsub("parametric_", "", bimodal$fileName)
@@ -38,9 +38,9 @@ bimodal$labels  <- labelData[match(bimodal$labels, labelData$R_label), ]$plot_la
 multimodal$labels  <- labelData[match(multimodal$labels, labelData$R_label), ]$plot_label
 
 ## Remove extra strategy (SI constrained abilities centered) 
-unimodal <- droplevels(unimodal[!is.na(unimodal$labels), ])
-bimodal <- droplevels(bimodal[!is.na(bimodal$labels), ])
-multimodal <- droplevels(multimodal[!is.na(multimodal$labels), ])
+if(sum(is.na(unimodal$labels)) > 0) unimodal <- droplevels(unimodal[!is.na(unimodal$labels), ])
+if(sum(is.na(bimodal$labels)) > 0) bimodal <- droplevels(bimodal[!is.na(bimodal$labels), ])
+if(sum(is.na(multimodal$labels)) > 0) multimodal <- droplevels(multimodal[!is.na(multimodal$labels), ])
 
 
 ## data frame for plotting
@@ -159,7 +159,7 @@ colorsParametricBnp <- labelData$colors[match(levels(dfParametricBnp$Strategy), 
 ##-----------------------------------------#
 
 ylabel <- 'Effective sample size per second'
-title <- paste0("Minimum effective sample size per second (total time)")
+title <- paste0("Multivariate effective sample size per second (total time)")
 
 p <-  ggplot(dfParametricBnp,  aes_string(x = "Strategy", y= "ESS", fill = "Strategy")) +
       geom_bar(position= position_dodge(),stat='identity',colour = "black",
@@ -264,7 +264,7 @@ colorsBnp <- labelData$colors[match(levels(dfBnpEff$Strategy), labelData$plot_la
 ##-----------------------------------------#
 
 ylabel <- 'Effective sample size per second'
-title <- paste0("Minimum effective sample size per second (total time)")
+title <- paste0("Multivariate effective sample size per second (total time)")
 
 p <-  ggplot(dfBnpEff,  aes_string(x = "Strategy", y= "ESS", fill = "Strategy")) +
       geom_bar(position= position_dodge(),stat='identity',colour = "black",

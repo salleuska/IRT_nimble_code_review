@@ -39,8 +39,8 @@ unimodalDf <- as.data.frame(do.call(rbind, unimodalList))
 # unique(labelData$R_label)
 
 # unimodalDf$ESS_second <- unimodalDf$essCodaLogLik/unimodalDf$runningTime
-unimodalDf$ESS_second <- unimodalDf$essCodaLogPostItemsAbility/unimodalDf$runningTime
-# unimodalDf$ESS_second <- unimodalDf$multiEssItemsAbility/unimodalDf$runningTime
+# unimodalDf$ESS_second <- unimodalDf$essCodaLogPostItemsAbility/unimodalDf$runningTime
+unimodalDf$ESS_second <- unimodalDf$multiEssItemsAbility/unimodalDf$runningTime
 
 unimodalDf$labels <- gsub("parametric_", "", unimodalDf$fileName)
 ## match R labels to plot labels
@@ -64,12 +64,12 @@ dfParametricEff$Simulation <- factor(dfParametricEff$Simulation)
 str(dfParametricEff)
 dfParametricEff$ESS
 
-ylab <- paste0("min ESS/second (total time)")
+yLabel <- paste0("mESS/second (total time)")
 p <-  ggplot(dfParametricEff,  aes_string(x = "Strategy", y= "ESS", fill = "Strategy")) +
       geom_bar(position= position_dodge(),stat='identity',colour = "black",
        width = 0.8) +
       facet_wrap(~ Simulation, ncol=2, scales='free') +
-      ylab("min ESS/second (total time)") + xlab("") + 
+      ylab(yLabel) + xlab("") + 
 #      ylim(c(0,6)) + 
       theme(legend.position = "none") +
       coord_flip() +
@@ -86,7 +86,7 @@ ggsave(filename = "unimodalMultiESS.png", plot = p,
 p1 <- ggplot(dfParametricEff, 
       aes(x = Strategy, y= ESS, group = Simulation, color = Simulation)) +
   geom_line() + geom_point() +
-  ylab("min ESS/second (total time)") + xlab("") + 
+  ylab(yLabel) + xlab("") + 
   theme_bw() + 
   theme(axis.text.x = element_text(angle = 45, vjust = 0.5), 
             legend.position = "bottom")
@@ -98,7 +98,7 @@ ggsave(filename = "unimodalMultiESS2.png", plot = p1,
 p2 <- ggplot(dfParametricEff, 
       aes(x = Simulation, y= ESS, group = Strategy, color = Strategy)) +
   geom_line() + geom_point() +
-  ylab("min ESS/second (total time)") + xlab("") + 
+  ylab(yLabel) + xlab("") + 
   theme_bw() + 
   theme(axis.text.x = element_text(angle = 45, vjust = 0.5),
       legend.position = "bottom")
@@ -106,6 +106,54 @@ p2 <- ggplot(dfParametricEff,
 ggsave(filename = "unimodalMultiESS3.png", plot = p2,
         width = 20, height = 12 , 
         dpi = 300, units = unit, device='png')
+
+### MINIMUM ESS
+
+dfParametricEff$ESS_second <- unimodalDf$essCodaItemsAbility/unimodalDf$runningTime
+
+yLabel <- paste0("min ESS/second (total time)")
+p <-  ggplot(dfParametricEff,  aes_string(x = "Strategy", y= "ESS", fill = "Strategy")) +
+      geom_bar(position= position_dodge(),stat='identity',colour = "black",
+       width = 0.8) +
+      facet_wrap(~ Simulation, ncol=2, scales='free') +
+      ylab(yLabel) + xlab("") + 
+#      ylim(c(0,6)) + 
+      theme(legend.position = "none") +
+      coord_flip() +
+      scale_fill_manual(values = labelData$colors) +
+      scale_x_discrete(limits = rev(levels(dfParametricEff$Strategy))) 
+
+p
+
+ggsave(filename = "unimodalMinESS.png", plot = p,
+        width = 30, height = 30 , 
+        dpi = 300, units = unit, device='png')
+
+
+p1 <- ggplot(dfParametricEff, 
+      aes(x = Strategy, y= ESS, group = Simulation, color = Simulation)) +
+  geom_line() + geom_point() +
+  ylab(yLabel) + xlab("") + 
+  theme_bw() + 
+  theme(axis.text.x = element_text(angle = 45, vjust = 0.5), 
+            legend.position = "bottom")
+
+ggsave(filename = "unimodalMinESS2.png", plot = p1,
+        width = 20, height = 12 , 
+        dpi = 300, units = unit, device='png')
+
+p2 <- ggplot(dfParametricEff, 
+      aes(x = Simulation, y= ESS, group = Strategy, color = Strategy)) +
+  geom_line() + geom_point() +
+  ylab(yLabel) + xlab("") + 
+  theme_bw() + 
+  theme(axis.text.x = element_text(angle = 45, vjust = 0.5),
+      legend.position = "bottom")
+
+ggsave(filename = "unimodalMinESS3.png", plot = p2,
+        width = 20, height = 12 , 
+        dpi = 300, units = unit, device='png')
+
 
 ##-----------------------------------------#
 ## Bimodal
@@ -126,8 +174,6 @@ unique(bimodalDf$fileName)
 unique(labelData$R_label)
 
 bimodalDf$ESS_second <- bimodalDf$multiEssItemsAbility/bimodalDf$runningTime
-# bimodalDf$ESS_second <- bimodalDf$essCodaLogLik/bimodalDf$runningTime
-# bimodalDf$ESS_second <- bimodalDf$essCodaLogPostItemsAbility/bimodalDf$runningTime
 
 bimodalDf$labels <- gsub("parametric_", "", bimodalDf$fileName)
 ## match R labels to plot labels
@@ -147,12 +193,12 @@ levels(dfParametricEff$Simulation) <- c("N = 2000, I = 15",
 dfParametricEff$Strategy  <- factor(dfParametricEff$Strategy, levels = labelData$plot_label)
 dfParametricEff$Simulation <- factor(dfParametricEff$Simulation)
 
-ylab <- paste0("min ESS/second (total time)")
+yLabel <- paste0("mESS/second (total time)")
 p <-  ggplot(dfParametricEff,  aes_string(x = "Strategy", y= "ESS", fill = "Strategy")) +
       geom_bar(position= position_dodge(),stat='identity',colour = "black",
        width = 0.8) +
       facet_wrap(~ Simulation, ncol=2, scales='free') +
-      ylab("min ESS/second (total time)") + xlab("") + 
+      ylab(yLabel) + xlab("") + 
 #      ylim(c(0,6)) + 
       theme(legend.position = "none") +
       coord_flip() +
@@ -168,7 +214,7 @@ ggsave(filename = "bimodalMultiESS.png", plot = p,
 p1 <- ggplot(dfParametricEff, 
       aes(x = Strategy, y= ESS, group = Simulation, color = Simulation)) +
   geom_line() + geom_point() +
-  ylab("min ESS/second (total time)") + xlab("") + 
+  ylab(yLabel) + xlab("") + 
   theme_bw() + 
   theme(axis.text.x = element_text(angle = 45, vjust = 0.5), 
             legend.position = "bottom")
@@ -180,12 +226,60 @@ ggsave(filename = "bimodalMultiESS2.png", plot = p1,
 p2 <- ggplot(dfParametricEff, 
       aes(x = Simulation, y= ESS, group = Strategy, color = Strategy)) +
   geom_line() + geom_point() +
-  ylab("min ESS/second (total time)") + xlab("") + 
+  ylab(yLabel) + xlab("") + 
   theme_bw() + 
   theme(axis.text.x = element_text(angle = 45, vjust = 0.5),
       legend.position = "bottom")
 p2
 ggsave(filename = "bimodalMultiESS3.png", plot = p2,
+        width = 20, height = 12 , 
+        dpi = 300, units = unit, device='png')
+
+### MINIMUM ESS
+
+dfParametricEff$ESS_second <- bimodalDf$essCodaItemsAbility/bimodalDf$runningTime
+
+
+yLabel <- paste0("min ESS/second (total time)")
+
+p <-  ggplot(dfParametricEff,  aes_string(x = "Strategy", y= "ESS", fill = "Strategy")) +
+      geom_bar(position= position_dodge(),stat='identity',colour = "black",
+       width = 0.8) +
+      facet_wrap(~ Simulation, ncol=2, scales='free') +
+      ylab(yLabel) + xlab("") + 
+#      ylim(c(0,6)) + 
+      theme(legend.position = "none") +
+      coord_flip() +
+      scale_fill_manual(values = labelData$colors) +
+      scale_x_discrete(limits = rev(levels(dfParametricEff$Strategy))) 
+
+p
+
+ggsave(filename = "bimodalMinESS.png", plot = p,
+        width = 30, height = 30 , 
+        dpi = 300, units = unit, device='png')
+
+p1 <- ggplot(dfParametricEff, 
+      aes(x = Strategy, y= ESS, group = Simulation, color = Simulation)) +
+  geom_line() + geom_point() +
+  ylab(yLabel) + xlab("") + 
+  theme_bw() + 
+  theme(axis.text.x = element_text(angle = 45, vjust = 0.5), 
+            legend.position = "bottom")
+p1
+ggsave(filename = "bimodalMinESS2.png", plot = p1,
+        width = 20, height = 12 , 
+        dpi = 300, units = unit, device='png')
+
+p2 <- ggplot(dfParametricEff, 
+      aes(x = Simulation, y= ESS, group = Strategy, color = Strategy)) +
+  geom_line() + geom_point() +
+  ylab(yLabel) + xlab("") + 
+  theme_bw() + 
+  theme(axis.text.x = element_text(angle = 45, vjust = 0.5),
+      legend.position = "bottom")
+p2
+ggsave(filename = "bimodalMinESS3.png", plot = p2,
         width = 20, height = 12 , 
         dpi = 300, units = unit, device='png')
 
@@ -231,12 +325,13 @@ dfParametricEff$Simulation <- factor(dfParametricEff$Simulation)
 
 str(dfParametricEff)
 dfParametricEff$ESS
-ylab <- paste0("min ESS/second (total time)")
+
+yLabel <- paste0("mESS/second (total time)")
 p <-  ggplot(dfParametricEff,  aes_string(x = "Strategy", y= "ESS", fill = "Strategy")) +
       geom_bar(position= position_dodge(),stat='identity',colour = "black",
        width = 0.8) +
       facet_wrap(~ Simulation, ncol=2, scales='free') +
-      ylab("min ESS/second (total time)") + xlab("") + 
+      ylab(yLabel) + xlab("") + 
 #      ylim(c(0,6)) + 
       theme(legend.position = "none") +
       coord_flip() +
@@ -254,7 +349,7 @@ ggsave(filename = "multimodalMultiESS.png", plot = p,
 p1 <- ggplot(dfParametricEff, 
       aes(x = Strategy, y= ESS, group = Simulation, color = Simulation)) +
   geom_line() + geom_point() +
-  ylab("min ESS/second (total time)") + xlab("") + 
+  ylab(yLabel) + xlab("") + 
   theme_bw() + 
   theme(axis.text.x = element_text(angle = 45, vjust = 0.5), 
             legend.position = "bottom")
@@ -266,7 +361,7 @@ ggsave(filename = "multimodalMultiESS2.png", plot = p1,
 p2 <- ggplot(dfParametricEff, 
       aes(x = Simulation, y= ESS, group = Strategy, color = Strategy)) +
   geom_line() + geom_point() +
-  ylab("min ESS/second (total time)") + xlab("") + 
+  ylab(yLabel) + xlab("") + 
   theme_bw() + 
   theme(axis.text.x = element_text(angle = 45, vjust = 0.5),
       legend.position = "bottom")
@@ -276,19 +371,50 @@ ggsave(filename = "multimodalMultiESS3.png", plot = p2,
         dpi = 300, units = unit, device='png')
 
 ##-----------------------------------------#
+yLabel <- paste0("mESS/second (total time)")
+dfParametricEff$ESS_second <- multimodal$essCodaItemsAbility/multimodal$runningTime
 
 
-# xx <- readRDS("output/posterior_samples_elaborated/simulation_unimodal/parametric/parametric_SI_unconstrained.rds")
-# plot(xx$otherParSamp[, "myLogLik"], type = "l")
-# plot(xx$otherParSamp[, "myLogProbAll"], type = "l")
-# plot(xx$otherParSamp[, "myLogProbSome"], type = "l")
+p <-  ggplot(dfParametricEff,  aes_string(x = "Strategy", y= "ESS", fill = "Strategy")) +
+      geom_bar(position= position_dodge(),stat='identity',colour = "black",
+       width = 0.8) +
+      facet_wrap(~ Simulation, ncol=2, scales='free') +
+      ylab(yLabel) + xlab("") + 
+#      ylim(c(0,6)) + 
+      theme(legend.position = "none") +
+      coord_flip() +
+      scale_fill_manual(values = labelData$colors) +
+      scale_x_discrete(limits = rev(levels(dfParametricEff$Strategy))) 
+p
 
-# coda::effectiveSize(xx$otherParSamp[, "myLogProbSome"])
-# coda::effectiveSize(xx$otherParSamp[, "myLogProbAll"])
-# coda::effectiveSize(xx$otherParSamp[, "myLogLik"])
+
+ggsave(filename = "multimodalMinESS.png", plot = p,
+        width = 30, height = 30 , 
+        dpi = 300, units = unit, device='png')
+
+p1 <- ggplot(dfParametricEff, 
+      aes(x = Strategy, y= ESS, group = Simulation, color = Simulation)) +
+  geom_line() + geom_point() +
+  ylab(yLabel) + xlab("") + 
+  theme_bw() + 
+  theme(axis.text.x = element_text(angle = 45, vjust = 0.5), 
+            legend.position = "bottom")
+p1
+ggsave(filename = "multimodalMinESS2.png", plot = p1,
+        width = 20, height = 12 , 
+        dpi = 300, units = unit, device='png')
+
+p2 <- ggplot(dfParametricEff, 
+      aes(x = Simulation, y= ESS, group = Strategy, color = Strategy)) +
+  geom_line() + geom_point() +
+  ylab(yLabel) + xlab("") + 
+  theme_bw() + 
+  theme(axis.text.x = element_text(angle = 45, vjust = 0.5),
+      legend.position = "bottom")
+p2
+ggsave(filename = "multimodalMinESS3.png", plot = p2,
+        width = 20, height = 12 , 
+        dpi = 300, units = unit, device='png')
 
 ##-----------------------------------------#
-## OLD CODE - NOT RUN
-##-----------------------------------------#
-## Plot Figure 2a
-##-----------------------------------------#
+

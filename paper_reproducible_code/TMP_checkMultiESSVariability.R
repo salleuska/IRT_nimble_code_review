@@ -115,35 +115,41 @@ df$Niter <- factor(df$Niter, levels = levels(as.factor(df$Niter))[c(4,1, 2,3 )])
 
 bp <- ggplot(df, aes(x=Niter, y=mESS, group=Niter)) + 
   geom_boxplot() + theme_bw() +
+  geom_point() + 
   theme(axis.text.x=element_blank() )+
   facet_wrap(~Niter, ncol = 2, scales = "free") + 
   ggtitle("NIMBLE model - mESS across 20 replications")
 bp
-ggsave(bp, file = "output/multiESSNimble.pdf")
+ggsave(bp, file = "output/multiESSNimble.pdf", width = 8, height = 5)
 
 # boxplot(mESS ~ Niter, data = dz)
 
 
 # boxplot(mESS ~ Niter, data = df)
 
-s1 <- data.frame(mESS = readRDS("output/Stan_multiESS__warmup_5000.rds"))
+s1 <- data.frame(mESS = readRDS("output/Stan_multiESS_10000_warmup_5000.rds"))
 s2 <- data.frame(mESS = readRDS("output/Stan_multiESS__warmup_10000.rds"))
+s3 <- data.frame(mESS = readRDS("output/Stan_multiESS_30000_warmup_15000.rds"))
+s4 <- data.frame(mESS = readRDS("output/Stan_multiESS__warmup_5000.rds"))
 
-s1$Niter <- paste0("N samples = " , 50000, "\n warmup = 5000")
-s2$Niter <- paste0("N samples = " , 10000, "\n warmup = 10000")
+s1$Niter <- paste0("N samples (after warmup) = " , 5000, "\n warmup = 5000")
+s2$Niter <- paste0("N samples (after warmup) = " , 10000, "\n warmup = 10000")
+s3$Niter <- paste0("N samples (after warmup) = " , 15000, "\n warmup = 15000")
+s4$Niter <- paste0("N samples (after warmup) = " , 45000, "\n warmup = 5000")
 
 
-df <- rbind(s1, s2)
-df$Niter <- factor(df$Niter, levels = levels(as.factor(df$Niter))[c(2,1)])
+df <- rbind(s1, s2, s3, s4)
+df$Niter <- factor(df$Niter, levels = levels(as.factor(df$Niter))[c(4,1, 2, 3)])
 
 bp <- ggplot(df, aes(x=Niter, y=mESS, group=Niter)) + 
   geom_boxplot() + theme_bw() +
+  geom_point() + 
   theme(axis.text.x=element_blank() )+
   facet_wrap(~Niter, ncol = 2, scales = "free") + 
   ggtitle("Stan Model - mESS across 20 replications")
 
 bp  
-ggsave(bp, file = "output/multiESSStan.pdf")
+ggsave(bp, file = "output/multiESSStan.pdf",  width = 8, height = 5)
 
 
 

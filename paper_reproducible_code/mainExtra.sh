@@ -83,6 +83,7 @@ for filename in output/posterior_samples/simulation_multimodal_I_10_N_1000/param
 	echo $filename
 	Rscript 2_extractResults.R --resFileName=$filename
 done
+### done sim 2
 
 for filename in output/posterior_samples/simulation_multimodal_I_10_N_5000/parametric/*.rds; do
 	echo $filename

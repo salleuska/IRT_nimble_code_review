@@ -291,7 +291,7 @@ done
 # --modelName="bnp_IRT_unconstrained"
 
 # Rscript 3_simulateFromDPmeasure.R \
-# --dataName="simulation_multimodal" \
+# --dataName="simulation_multimodal2" \
 # --modelName="bnp_IRT_unconstrained"
 
 # Rscript 3_simulateFromDPmeasure.R \

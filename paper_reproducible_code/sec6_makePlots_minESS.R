@@ -21,41 +21,53 @@ bnpFileName <- "bnp_efficiency.txt"
 
 unimodal <- read.table(paste0("output/mcmc_time/simulation_unimodal/", paraFileName), header = T)
 bimodal  <- read.table(paste0("output/mcmc_time/simulation_bimodal/", paraFileName), header = T)
+multimodal  <- read.table(paste0("output/mcmc_time/simulation_multimodal/", paraFileName), header = T)
 
 unimodal$ESS_second <- unimodal$essCodaItemsAbility/unimodal$runningTime
 bimodal$ESS_second  <- bimodal$essCodaItemsAbility/bimodal$runningTime
+multimodal$ESS_second  <- multimodal$essCodaItemsAbility/multimodal$runningTime
 
 bimodal$simulation  <- "Bimodal simulation"
 unimodal$simulation <- "Unimodal simulation"
+multimodal$simulation <- "Multimodal simulation"
+
 
 unimodal$labels <- gsub("parametric_", "", unimodal$fileName)
 bimodal$labels  <- gsub("parametric_", "", bimodal$fileName)
+multimodal$labels <- gsub("parametric_", "", multimodal$fileName)
 
 ## match R labels to plot labels
 unimodal$labels <- labelData[match(unimodal$labels, labelData$R_label), ]$plot_label
 bimodal$labels  <- labelData[match(bimodal$labels, labelData$R_label), ]$plot_label
+multimodal$labels  <- labelData[match(multimodal$labels, labelData$R_label), ]$plot_label
+
+## Remove extra strategy (SI constrained abilities centered) 
+if(sum(is.na(unimodal$labels)) > 0) unimodal <- droplevels(unimodal[!is.na(unimodal$labels), ])
+if(sum(is.na(bimodal$labels)) > 0) bimodal <- droplevels(bimodal[!is.na(bimodal$labels), ])
+if(sum(is.na(multimodal$labels)) > 0) multimodal <- droplevels(multimodal[!is.na(multimodal$labels), ])
 
 
 ## data frame for plotting
 dfParametricEff <- data.frame(rbind(unimodal[, c("labels", "ESS_second", "simulation")],
-						                        bimodal[, c("labels", "ESS_second", "simulation")]))
-
+                              rbind(bimodal[, c("labels", "ESS_second", "simulation")],
+                                  multimodal[, c("labels", "ESS_second", "simulation")]) ))
 
 colnames(dfParametricEff) <- c("Strategy", "ESS", "Simulation")
 
 dfParametricEff$Strategy  <- factor(dfParametricEff$Strategy, levels = labelData$plot_label)
-dfParametricEff$Simulation <- factor(dfParametricEff$Simulation, levels = c("Unimodal simulation", "Bimodal simulation") )
+dfParametricEff$Simulation <- factor(dfParametricEff$Simulation, levels = c("Unimodal simulation", "Bimodal simulation",  "Multimodal simulation") )
 
 ##-----------------------------------------#
 ## Plot Figure 2a
 ##-----------------------------------------#
 ylab <- paste0("min ESS/second (total time)")
+
 p <-  ggplot(dfParametricEff,  aes_string(x = "Strategy", y= "ESS", fill = "Strategy")) +
       geom_bar(position= position_dodge(),stat='identity',colour = "black",
        width = 0.8) +
-      facet_wrap(~ Simulation, ncol=2, scales='fixed') +
-      ylab("min ESS/second (total time)") + xlab("") + 
-      ylim(c(0,9)) + 
+      facet_wrap(~ Simulation, ncol=3, scales='fixed') +
+      ylab("mESS/second (total time)") + xlab("") + 
+#      ylim(c(0,6)) + 
       theme(legend.position = "none") +
       coord_flip() +
       scale_fill_manual(values = labelData$colors) +
@@ -71,24 +83,26 @@ ggsave(filename = "figures/fig3a_simulation_efficiencies.png", plot = p,
 ## Plot Figure 2b
 ## Comparison with sampling times
 ##-----------------------------------------#
-bimodal$ESS_second2 <- bimodal$essCodaItemsAbility/bimodal$samplingTime
-unimodal$ESS_second2 <- unimodal$essCodaItemsAbility/unimodal$samplingTime
+bimodal$ESS_second2 <- bimodal$multiEssItemsAbility/bimodal$samplingTime
+unimodal$ESS_second2 <- unimodal$multiEssItemsAbility/unimodal$samplingTime
+multimodal$ESS_second2 <- multimodal$multiEssItemsAbility/multimodal$samplingTime
 
 dfParametricEffSampling <- dfParametricEff
-dfParametricEffSampling$ESS <- c(unimodal$ESS_second2, bimodal$ESS_second2)
+dfParametricEffSampling$ESS <- c(unimodal$ESS_second2, bimodal$ESS_second2,multimodal$ESS_second2)
 
 
 ylabel <- 'min ESS/second'
 title <- paste0("Minimum effective sample size per second (sampling time)")
 p <-  ggplot(dfParametricEffSampling,  aes_string(x = "Strategy", y= "ESS", fill = "Strategy")) +
       geom_bar(position= position_dodge(),stat='identity',colour = "black", width = 0.8) +
-      facet_wrap(~ Simulation, ncol=2, scales='fixed') +
-      ylab("min ESS/second (sampling time)") + xlab("") + 
+      facet_wrap(~ Simulation, ncol=3, scales='fixed') +
+      ylab("mESS/second (sampling time)") + xlab("") + 
       theme(legend.position = "none") +
       coord_flip() +
       scale_x_discrete(limits = rev(levels(dfParametricEffSampling$Strategy))) +
       scale_fill_manual(values = labelData$colors) 
 p
+
 
 ggsave(filename = "figures/fig3b_simulation_efficiencies_sampling.png", plot = p,
         width = plot_width, height = plot_height , dpi = 300, units = unit, device='png')
@@ -99,40 +113,52 @@ ggsave(filename = "figures/fig3b_simulation_efficiencies_sampling.png", plot = p
 
 bnpUnimodal <- read.table(paste0("output/mcmc_time/simulation_unimodal/", bnpFileName), header = T)
 bnpBimodal  <- read.table(paste0("output/mcmc_time/simulation_bimodal/", bnpFileName), header = T)
+bnpMultimodal  <- read.table(paste0("output/mcmc_time/simulation_multimodal/", bnpFileName), header = T)
 
 bnpUnimodal$ESS_second <- bnpUnimodal$essCodaItemsAbility/bnpUnimodal$runningTime
 bnpBimodal$ESS_second <- bnpBimodal$essCodaItemsAbility/bnpBimodal$runningTime
+bnpMultimodal$ESS_second <- bnpMultimodal$essCodaItemsAbility/bnpMultimodal$runningTime
+
 
 bnpBimodal$simulation <- "Bimodal simulation"
 bnpUnimodal$simulation <- "Unimodal simulation"
+bnpMultimodal$simulation <- "Multimodal simulation"
 
 bnpUnimodal$labels <- gsub("bnp_", "", bnpUnimodal$fileName)
 bnpBimodal$labels <- gsub("bnp_", "", bnpBimodal$fileName)
+bnpMultimodal$labels <- gsub("bnp_", "", bnpMultimodal$fileName)
 
 ## match R labels to plot labels
 bnpUnimodal$labels <- droplevels(labelData[match(bnpUnimodal$labels, labelData$R_label), ]$plot_label)
 bnpBimodal$labels  <- droplevels(labelData[match(bnpBimodal$labels, labelData$R_label), ]$plot_label)
+bnpMultimodal$labels  <- droplevels(labelData[match(bnpMultimodal$labels, labelData$R_label), ]$plot_label)
 
 ## select parametric models with bnp equivalent and create data frame for plotting
 dfParametricBnp <- data.frame(rbind(unimodal[which(unimodal$label %in% levels(bnpUnimodal$labels)), 
-							c("labels", "ESS_second", "simulation")], 
-						   bimodal[which(bimodal$label %in% levels(bnpBimodal$labels)), 
-							c("labels", "ESS_second", "simulation")])) 
+                                          c("labels", "ESS_second", "simulation")], 
+                                       bimodal[which(bimodal$label %in% levels(bnpBimodal$labels)), 
+                                          c("labels", "ESS_second", "simulation")])) 
+
+dfParametricBnp <- rbind(dfParametricBnp, multimodal[which(multimodal$label %in% levels(bnpMultimodal$labels)), 
+                                          c("labels", "ESS_second", "simulation")])
+
 dfParametricBnp <- droplevels(dfParametricBnp)
 dfParametricBnp$model <- "Parametric"
 
-bnpUnimodal$model <- "Semiparametric"						  
-bnpBimodal$model  <- "Semiparametric"						  
+bnpUnimodal$model <- "Semiparametric"                                     
+bnpBimodal$model  <- "Semiparametric"                                     
+bnpMultimodal$model  <- "Semiparametric"       				  
 
 dfParametricBnp <- rbind(dfParametricBnp, 
                          bnpUnimodal[, c("labels", "ESS_second", "simulation", "model")],
- 				                 bnpBimodal[, c("labels", "ESS_second", "simulation", "model")])
+                         bnpBimodal[, c("labels", "ESS_second", "simulation", "model")], 
+                         bnpMultimodal[, c("labels", "ESS_second", "simulation", "model")])
 
 
 colnames(dfParametricBnp) <- c("Strategy", "ESS", "Simulation", "Model")
 dfParametricBnp$Strategy  <- droplevels(factor(dfParametricBnp$Strategy, levels = labelData$plot_label))
 ## set level order
-dfParametricBnp$Simulation <- factor(dfParametricBnp$Simulation, levels = c("Unimodal simulation", "Bimodal simulation"))
+dfParametricBnp$Simulation <- factor(dfParametricBnp$Simulation, levels = c("Unimodal simulation", "Bimodal simulation", "Multimodal simulation"))
 
 colorsParametricBnp <- labelData$colors[match(levels(dfParametricBnp$Strategy), labelData$plot_label)]
 ##-----------------------------------------#
