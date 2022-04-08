@@ -8,7 +8,7 @@ dMultiModal <- function(x, weights = c(1,1,1), means = c(-2, 0, 3)){
 
 	prop[1]*dnorm(x, mean = means[1], sd = sqrt(1)) + 
 	prop[2]*dnorm(x, mean = means[2], sd = sqrt(0.5)) + 
-	prop[3]*dsn(x, xi = means[3], omega = 1, alpha = -2)
+	prop[3]*dsn(x, xi = means[3], omega = 1, alpha = -3)
 }
 
 ## curve(dMultiModal(x, weights = c(4,4,2)), from = -5, to = 5)
@@ -18,7 +18,7 @@ rMultiModal <- function(n, weights = c(4,4,2), means = c(-2, 0, 3)){
 
 	out <- c(rnorm(n*prop[1], mean = means[1], sd = sqrt(1)),
 	rnorm(n*prop[2], mean = means[2], sd = sqrt(0.5)),
-	rsn(n*prop[3], xi = means[3], omega = 1, alpha = -2))
+	rsn(n*prop[3], xi = means[3], omega = 1, alpha = -3))
 
 	out
 }
@@ -41,13 +41,10 @@ beta0       <- seq(-3,3,length=nItems)
 lambda0 <- exp(log(lambda0) - mean(log(lambda0)))
 
 ## parameters of the 3 components mixture
-original
-weights = c(4,4,2)
-means = c(-2, 0, 3)
 
-## possible change
-# weights = c(2,4,4)
-# means = c(-2, 0, 3)
+# possible change
+weights = c(2,4,4)
+means = c(-2, 0, 3)
 
 # generate thetas from a mixture and the I x P matrix of response probabilities
 etaAbility  <- rMultiModal(n = nPersons, weights = weights, means = means)
@@ -60,11 +57,11 @@ prob        <- plogis(term1-term2)  ### 1/(1 + exp(term.2 - term.1))
 
 Y        <- ifelse(runif(nItems*nPersons) < prob, 1, 0)
 save(nItems, nPersons, lambda0, beta0, etaAbility, Y , prob, file = "simulation_multimodal_allValues.RData")
-saveRDS(Y , file = "simulation_multimodal.rds")
+saveRDS(Y , file = "simulation_multimodal2.rds")
 
 
 ## ---- simulation Expanded
-## Simulated data with multimodal latent abilities
+## Simulated data with multimodal2 latent abilities
 set.seed(243)
 
 # set the number of items I and persons P
@@ -97,7 +94,7 @@ for(i in 1:2){
 
 	Y        <- ifelse(runif(nItemSim*nPersonSim) < prob, 1, 0)
 	
-	filename <- paste0("simulation_multimodal_I_", nItemSim, "_N_", nPersonSim)
+	filename <- paste0("simulation_multimodal2_I_", nItemSim, "_N_", nPersonSim)
 	save(nItemSim, nPersonSim, lambda0, beta0, etaAbility, Y , prob, file = paste0(filename, "_allData.RData"))
 	saveRDS(Y , file = paste0(filename, ".rds"))
 

@@ -108,5 +108,5 @@ for(i in 1:nTimes){
 	                                            adjust = FALSE))
 }
 
-saveRDS(out, file = paste0("output/Stan_multiESS_", MCMCcontrol$nsamples,"_warmup_", MCMCcontrol$nwarmup, ".rds"))
+saveRDS(out, file = paste0("output/Stan_multiESS_", MCMCcontrol$niter,"_warmup_", MCMCcontrol$nwarmup, ".rds"))
 

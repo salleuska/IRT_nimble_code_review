@@ -10,7 +10,7 @@ FILES=(models/bnp/*.R)
 
 Rscript 1_runNimbleModels.R  \
 --model=${FILES[$SLURM_ARRAY_TASK_ID]} \
---data=data/simulation_multimodal_I_10_N_1000.rds \
+--data=data/simulation_multimodal2_I_10_N_1000.rds \
 --niter=50000 \
 --nburnin=5000 \
 --nthin=1 \
@@ -18,7 +18,7 @@ Rscript 1_runNimbleModels.R  \
 
 Rscript 1_runNimbleModels.R  \
 --model=${FILES[$SLURM_ARRAY_TASK_ID]} \
---data=data/simulation_multimodal_I_10_N_1000.rds \
+--data=data/simulation_multimodal2_I_10_N_1000.rds \
 --niter=50000 \
 --nburnin=5000 \
 --nthin=1 \
@@ -26,7 +26,7 @@ Rscript 1_runNimbleModels.R  \
 
 Rscript 1_runNimbleModels.R  \
 --model=${FILES[$SLURM_ARRAY_TASK_ID]} \
---data=data/simulation_multimodal_I_10_N_5000.rds \
+--data=data/simulation_multimodal2_I_10_N_5000.rds \
 --niter=50000 \
 --nburnin=5000 \
 --nthin=1 \
@@ -34,7 +34,7 @@ Rscript 1_runNimbleModels.R  \
 
 Rscript 1_runNimbleModels.R  \
 --model=${FILES[$SLURM_ARRAY_TASK_ID]} \
---data=data/simulation_multimodal_I_10_N_5000.rds \
+--data=data/simulation_multimodal2_I_10_N_5000.rds \
 --niter=50000 \
 --nburnin=5000 \
 --nthin=1 \

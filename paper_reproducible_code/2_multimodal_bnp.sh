@@ -10,7 +10,7 @@ FILES=(models/bnp/*.R)
 
 Rscript 1_runNimbleModels.R  \
 --model=${FILES[$SLURM_ARRAY_TASK_ID]} \
---data=data/simulation_multimodal.rds \
+--data=data/simulation_multimodal2.rds \
 --niter=50000 \
 --nburnin=5000 \
 --nthin=1 \
@@ -18,7 +18,7 @@ Rscript 1_runNimbleModels.R  \
 
 Rscript 1_runNimbleModels.R  \
 --model=${FILES[$SLURM_ARRAY_TASK_ID]} \
---data=data/simulation_multimodal.rds \
+--data=data/simulation_multimodal2.rds \
 --niter=50000 \
 --nburnin=5000 \
 --nthin=1 \

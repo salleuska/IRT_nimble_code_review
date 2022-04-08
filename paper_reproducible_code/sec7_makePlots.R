@@ -359,6 +359,191 @@ pBiPerc
 
 ggsave(filename = "figures/bimodal_percentiles.png", plot = pBiPerc,
         width = plot_width, height = plot_height , dpi = 300, units = unit, device='png')
+##-----------------------------------------#
+## Multimodal
+##-----------------------------------------#
+dataName <- "simulation_multimodal"
+multimodalRes <- readRDS("figures/dataForFigures/multimodal.rds")
+
+##-----------------------------------------#
+## Discriminations
+##-----------------------------------------#
+
+estimateDiscr <- data.frame(estimate = c(multimodalRes$paraEstimates$lambda,
+                                           multimodalRes$bnpEstimates$lambda), 
+                             CI_low  = c(multimodalRes$paraLow$lambda,
+                                        multimodalRes$bnpLow$lambda), 
+                             CI_upp  = c(multimodalRes$paraUpper$lambda,
+                                        multimodalRes$bnpUpper$lambda))
+
+estimateDiscr$trueVal <- rep(multimodalRes$truValues$lambda, 2)
+estimateDiscr$Model <- rep(c("Parametric", "Semiparametric"), each = length(multimodalRes$truValues$lambda))
+
+pMultiDiscr <- ggplot(estimateDiscr, aes(x = trueVal, y = estimate, color = Model)) + 
+        geom_point(size = 1.5) + 
+          scale_x_continuous(breaks = seq(0.2, 2, by = 0.2)) +
+          scale_y_continuous(breaks = seq(0.2, 2, by = 0.2)) + 
+        geom_errorbar(aes(ymin=CI_low, ymax=CI_upp), 
+                width = 0.05) + 
+        scale_color_manual(values=c(paraColor, bnpColor),
+            guide = guide_legend(override.aes = list(linetype = rep("blank", 2), 
+                                                     shape    = c(16, 16)))) +
+        labs(x = "True value", y = "Estimate", title = "Discrimination parameters") + 
+        geom_abline(color = 'grey10', lty = 3)
+
+pMultiDiscr
+ggsave(filename = "figures/multimodal_discriminations.png", plot = pMultiDiscr,
+        width = plot_width, height = plot_height , dpi = 300, units = unit, device='png')
+
+##-----------------------------------------#
+## Difficulties
+##-----------------------------------------#
+
+estimateDiff <- data.frame(estimate =  c(multimodalRes$paraEstimates$beta,
+                                         multimodalRes$bnpEstimates$beta), 
+                             CI_low = c(multimodalRes$paraLow$beta,
+                                        multimodalRes$bnpLow$beta), 
+                             CI_upp = c(multimodalRes$paraUpper$beta,
+                                        multimodalRes$bnpUpper$beta))
+
+estimateDiff$trueVal <- rep(multimodalRes$truValues$beta, 2)
+estimateDiff$Model <- rep(c("Parametric", "Semiparametric"), each = length(multimodalRes$truValues$beta))
+
+pMultiDiff <- ggplot(estimateDiff, aes(x = trueVal, y = estimate, color = Model)) + 
+        geom_point(size = 1.5) + 
+          scale_x_continuous(breaks = seq(-3, 3, by = 1)) +
+          scale_y_continuous(breaks = seq(-3, 3, by = 1)) +
+        geom_errorbar(aes(ymin=CI_low, ymax=CI_upp), width = 0.2) + 
+        scale_color_manual(values=c(paraColor, bnpColor),
+            guide = guide_legend(override.aes = list(linetype = rep("blank", 2), 
+                                                     shape    = c(16, 16)))) +
+        labs(x = "True value", y = "Estimate", title = "Difficulty parameters") + 
+        geom_abline(color = 'grey10', lty = 3)
+
+pMultiDiff
+
+ggsave(filename = "figures/multimodal_difficulties.png", plot = pMultiDiff,
+        width = plot_width, height = plot_height , dpi = 300, units = unit, device='png')
+
+##-----------------------------------------#
+## Density - mean 
+##-----------------------------------------#
+
+dfEtaMeansUni <- data.frame(mean = c(multimodalRes$paraEstimates$eta,
+                                                                         multimodalRes$bnpEstimates$eta))
+
+dfEtaMeansUni$Model <- rep(c('Parametric', 'Semiparametric'), each = dim(dfEtaMeansUni)[1]/2)
+
+title <- paste0("Multimodal simulation\nDistribution of individual posterior mean abilities")
+
+pEtaMeanUni <- ggplot(dfEtaMeansUni, aes(x=mean, color = Model)) +
+                            geom_histogram(aes(y=..density..), position="identity",
+                              binwidth = 0.1, fill="white",key_glyph = "path")+
+                            geom_line(stat = "density", lwd = 1, key_glyph = "path") + 
+                            xlim(-8, 8) +
+                              labs(title=title,x="Ability", y = "Density")+
+                            scale_color_manual(values=c(paraColor, bnpColor, "black"),
+                              guide=guide_legend(override.aes=list(linetype=c(1,1,3))))+
+                            stat_function(
+                                    fun = function(x) dnorm(x, 0, sd = 1.25), 
+                                    aes(col = 'True density'),lwd = 1, lty = 3) 
+
+pEtaMeanUni <- pEtaMeanUni + theme(legend.title = element_blank())
+pEtaMeanUni
+
+ggsave(filename = "figures/multimodal_posterior_means.png", plot = pEtaMeanUni,
+        width = plot_width, height = plot_height , dpi = 300, units = unit, device='png')
+##-----------------------------------------#
+## Density - DP Measure
+##-----------------------------------------#
+
+dfEtaDensity <- data.frame(grid  = multimodalRes$grid, 
+                              semiparametric  = apply(multimodalRes$densityDPMeasure, 2, mean),
+                              parametric      = apply(multimodalRes$densitySamplesPara, 2, mean))
+
+dMultiModal <- function(x, weights = c(1,1,1), means = c(-2, 0, 3)){
+require(sn)
+        prop <- weights/sum(weights)
+
+        prop[1]*dnorm(x, mean = means[1], sd = sqrt(1)) + 
+        prop[2]*dnorm(x, mean = means[2], sd = sqrt(0.5)) + 
+        prop[3]*dsn(x, xi = means[3], omega = 1, alpha = -2)
+}
+
+weights = c(4,4,2)
+means = c(-2, 0, 3)
+
+dfEtaDensity$trueDensity <- dMultiModal(dfEtaDensity$grid, weights, means)
+
+dfEtaDensityPlot <- reshape2::melt(dfEtaDensity, id.vars = "grid")
+colnames(dfEtaDensityPlot) <- c("grid", "Model", "value")
+levels(dfEtaDensityPlot$Model) <- c("Semiparametric", "Parametric", "True density")
+dfEtaDensityPlot$Model <- factor(dfEtaDensityPlot$Model, levels = c("Parametric", "Semiparametric", "True density"))
+
+dfIntervalPara <- data.frame(grid  = multimodalRes$grid, 
+                             lower = apply(multimodalRes$densitySamplesPara, 2, quantile, 0.025), 
+                             upper = apply(multimodalRes$densitySamplesPara, 2, quantile, 0.975))
+dfIntervalPara$Model <- "Parametric"
+
+dfIntervalBNP <- data.frame(grid  = multimodalRes$grid, 
+                             lower = apply(multimodalRes$densityDPMeasure, 2, quantile, 0.025), 
+                             upper = apply(multimodalRes$densityDPMeasure, 2, quantile, 0.975))
+
+dfIntervalBNP$Model <- "Semiparametric"
+
+
+title <- paste0("Multimodal simulation\nEstimate of the distribution of ability")
+
+pEtaDensityUni <- ggplot(dfEtaDensityPlot, aes(x=grid, y = value, color = Model)) +
+                        geom_line(lwd = 1, aes(linetype=Model)) +
+                        geom_line(data = dfIntervalBNP, aes(x = grid, y=lower), lwd = 1,  linetype="dashed") + 
+                        geom_line(data = dfIntervalBNP, aes(x = grid, y=upper), lwd = 1,  linetype="dashed") +
+                        geom_line(data = dfIntervalPara, aes(x = grid, y=lower), lwd = 1, linetype="dashed") + 
+                        geom_line(data = dfIntervalPara, aes(x = grid, y=upper), lwd = 1, linetype="dashed") +
+                        xlim(-8, 8) +
+                        scale_linetype_manual(values=c("solid", "solid", "dotted")) +
+                        labs(title=title, x="Ability", y = "Density")+
+                        scale_color_manual(values=c(paraColor, bnpColor, "black"),
+                            guide=guide_legend(override.aes=list(linetype=c("solid", "solid", "dotted"))))
+
+pEtaDensityUni <- pEtaDensityUni + theme(legend.title = element_blank())
+pEtaDensityUni
+ggsave(filename = "figures/multimodal_posterior_density.png", plot = pEtaDensityUni,
+        width = plot_width, height = plot_height , dpi = 300, units = unit, device='png')
+
+##-----------------------------------------#
+## Percentiles
+##-----------------------------------------#
+dfPercentile <- data.frame(ind       = rep(1:50, 2),
+                           estimate  = c(apply(multimodalRes$paraPerc, 2, mean),
+                                         apply(multimodalRes$bnpPerc, 2, mean)),
+                           CI_low    = c(apply(multimodalRes$paraPerc, 2, quantile, 0.025),
+                                         apply(multimodalRes$bnpPerc, 2, quantile, 0.025)),
+                           CI_upp    = c(apply(multimodalRes$paraPerc, 2, quantile, 0.975),
+                                         apply(multimodalRes$bnpPerc, 2, quantile, 0.975)))
+
+
+dfPercentile$trueVal <- rep(multimodalRes$truePerc, 2)
+dfPercentile$Model <- rep(c("Parametric", "Semiparametric"), each = dim(dfPercentile)[1]/2)
+
+pMultiPerc <- ggplot(dfPercentile, aes(x = ind, y = estimate*100, color = Model)) + 
+        geom_point(size = 1.5, position = position_dodge(width = 0.6)) + 
+          scale_y_continuous(breaks = seq(0, 100, by = 10)) +
+          scale_x_continuous(breaks = seq(1, 50, by = 2)) +
+            theme(axis.text.x = element_blank(), legend.title=element_blank()) + 
+        geom_errorbar(aes(ymin=CI_low*100, ymax=CI_upp*100), 
+                width = 0.8, position = position_dodge(width = 0.6)) + 
+        geom_point(aes(x = ind, y = trueVal*100, fill = "True value"), color = "black", size = 1.5) + 
+        scale_color_manual(values=c(paraColor, bnpColor),
+            guide = guide_legend(override.aes = list(linetype = rep("blank"), 
+                                                     shape    = c(16, 16),
+                                                     color    = c(paraColor, bnpColor)))) + 
+        labs(y = "Percentile", x = "Individual", 
+                title = "Multimodal simulation")  
+pMultiPerc
+
+ggsave(filename = "figures/multimodal_percentiles.png", plot = pMultiPerc,
+        width = plot_width, height = plot_height , dpi = 300, units = unit, device='png')
 
 ##-----------------------------------------#
 ## Figure 6

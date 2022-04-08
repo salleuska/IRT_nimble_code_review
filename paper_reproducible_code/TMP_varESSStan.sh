@@ -14,6 +14,11 @@
 # --nsamples=10000 \
 # --nwarmup=10000
 
+#  Rscript TMP_checkMultiESSVariabilityStan.R  \
+# --nsamples=50000 \
+# --nwarmup=5000
+
+
  Rscript TMP_checkMultiESSVariabilityStan.R  \
---nsamples=50000 \
---nwarmup=5000
+--nsamples=15000 \
+--nwarmup=15000
