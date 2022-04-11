@@ -370,7 +370,6 @@ multimodalRes <- readRDS("figures/dataForFigures/multimodal2.rds")
 ##-----------------------------------------#
 ## Discriminations
 ##-----------------------------------------#
-
 estimateDiscr <- data.frame(estimate = c(multimodalRes$paraEstimates$lambda,
                                            multimodalRes$bnpEstimates$lambda), 
                              CI_low  = c(multimodalRes$paraLow$lambda,
