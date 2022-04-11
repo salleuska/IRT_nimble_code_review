@@ -13,7 +13,7 @@ args <- R.utils::commandArgs(asValue=TRUE)
 ## --dataName
 ## --modelName
 ##-----------------------------------------#
-#args <- list(dataName="simulation_unimodal", modelName="bnp_SI_unconstrained")
+#args <- list(dataName="simulation_multimodal2", modelName="bnp_IRT_unconstrained")
 ## Set directories
 dirResults <- "output/posterior_samples/"
 dirOutput  <- "output/posterior_samples_elaborated/"
@@ -44,6 +44,7 @@ originalSamples <- originalRes$samples[[1]]
 thinEta <- originalRes$MCMCcontrol$thin2
 nSamp <- originalRes$MCMCcontrol$niter - originalRes$MCMCcontrol$nburnin
 
+if(thinEta == 1) thinEta <- 10
 indicesEta <- seq(from = thinEta,  
 				  to = nSamp, 
 				  by = thinEta)

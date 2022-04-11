@@ -282,36 +282,39 @@ done
 ## Using more efficient MCMC strategies for each 
 ## simulated scenario
 
-# Rscript 3_simulateFromDPmeasure.R \
-# --dataName="simulation_unimodal" \
-# --modelName="bnp_IRT_unconstrained"
+Rscript 3_simulateFromDPmeasure.R \
+--dataName="simulation_unimodal" \
+--modelName="bnp_IRT_unconstrained"
 
-# Rscript 3_simulateFromDPmeasure.R \
-# --dataName="simulation_bimodal" \
-# --modelName="bnp_IRT_unconstrained"
+Rscript 3_simulateFromDPmeasure.R \
+--dataName="simulation_bimodal" \
+--modelName="bnp_IRT_unconstrained"
 
-# Rscript 3_simulateFromDPmeasure.R \
-# --dataName="simulation_multimodal2" \
-# --modelName="bnp_IRT_unconstrained"
+Rscript 3_simulateFromDPmeasure.R \
+--dataName="simulation_multimodal" \
+--modelName="bnp_IRT_unconstrained"
 
-# Rscript 3_simulateFromDPmeasure.R \
-# --dataName="data_health" \
-# --modelName="bnp_IRT_unconstrained"
+## Using more efficient MCMC strategies for each 
+## data example
 
-# Rscript 3_simulateFromDPmeasure.R \
-# --dataName="data_timss" \
-# --modelName="bnp_SI_unconstrained_centered"
+Rscript 3_simulateFromDPmeasure.R \
+--dataName="data_health" \
+--modelName="bnp_IRT_unconstrained"
 
-## RUNNING ON THE SERVE APR 7 
-# Rscript 3_simulateFromDPmeasure.R \
-# --dataName="data_timss" \
-# --modelName="bnp3PL_IRT_unconstrained"
+Rscript 3_simulateFromDPmeasure.R \
+--dataName="data_timss" \
+--modelName="bnp_SI_unconstrained_centered"
+
+## 3PL model for TIMSS data
+Rscript 3_simulateFromDPmeasure.R \
+--dataName="data_timss" \
+--modelName="bnp3PL_IRT_unconstrained"
 
 #############################################
 ## 4) Make plots
 ############################################
 
-Rscript computeQuantitesForFigures.R
+Rscript 4_computeQuantitesForFigures.R
 
 Rscript sec6_makePlots.R
 Rscript sec7_makePlots.R

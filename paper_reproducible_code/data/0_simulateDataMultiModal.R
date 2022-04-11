@@ -41,7 +41,6 @@ beta0       <- seq(-3,3,length=nItems)
 lambda0 <- exp(log(lambda0) - mean(log(lambda0)))
 
 ## parameters of the 3 components mixture
-original
 weights = c(4,4,2)
 means = c(-2, 0, 3)
 

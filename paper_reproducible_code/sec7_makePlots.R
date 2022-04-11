@@ -9,6 +9,7 @@ library(ggplot2)
 library(cowplot)
 library(bayestestR)
 source("R_functions/ggplot_settings.R")
+source("R_functions/multimodalDensity.R")
 ##-----------------------------------------#
 ## Set dimensions
 plot_width  <- 21*1.1 ## a4 paper
@@ -91,6 +92,7 @@ dfEtaMeansUni <- data.frame(mean = c(unimodalRes$paraEstimates$eta,
 dfEtaMeansUni$Model <- rep(c('Parametric', 'Semiparametric'), each = dim(dfEtaMeansUni)[1]/2)
 
 title <- paste0("Unimodal simulation\nDistribution of individual posterior mean abilities")
+
 
 pEtaMeanUni <- ggplot(dfEtaMeansUni, aes(x=mean, color = Model)) +
 			    geom_histogram(aes(y=..density..), position="identity",
@@ -362,8 +364,8 @@ ggsave(filename = "figures/bimodal_percentiles.png", plot = pBiPerc,
 ##-----------------------------------------#
 ## Multimodal
 ##-----------------------------------------#
-dataName <- "simulation_multimodal"
-multimodalRes <- readRDS("figures/dataForFigures/multimodal.rds")
+dataName <- "simulation_multimodal2"
+multimodalRes <- readRDS("figures/dataForFigures/multimodal2.rds")
 
 ##-----------------------------------------#
 ## Discriminations
@@ -445,7 +447,9 @@ pEtaMeanUni <- ggplot(dfEtaMeansUni, aes(x=mean, color = Model)) +
                             scale_color_manual(values=c(paraColor, bnpColor, "black"),
                               guide=guide_legend(override.aes=list(linetype=c(1,1,3))))+
                             stat_function(
-                                    fun = function(x) dnorm(x, 0, sd = 1.25), 
+                                    fun = function(x) dMultiModal(x,
+                                        weights = c(2,4,4), 
+                                        means= c(-2, 0, 3)), 
                                     aes(col = 'True density'),lwd = 1, lty = 3) 
 
 pEtaMeanUni <- pEtaMeanUni + theme(legend.title = element_blank())
@@ -461,19 +465,10 @@ dfEtaDensity <- data.frame(grid  = multimodalRes$grid,
                               semiparametric  = apply(multimodalRes$densityDPMeasure, 2, mean),
                               parametric      = apply(multimodalRes$densitySamplesPara, 2, mean))
 
-dMultiModal <- function(x, weights = c(1,1,1), means = c(-2, 0, 3)){
-require(sn)
-        prop <- weights/sum(weights)
 
-        prop[1]*dnorm(x, mean = means[1], sd = sqrt(1)) + 
-        prop[2]*dnorm(x, mean = means[2], sd = sqrt(0.5)) + 
-        prop[3]*dsn(x, xi = means[3], omega = 1, alpha = -2)
-}
-
-weights = c(4,4,2)
-means = c(-2, 0, 3)
-
-dfEtaDensity$trueDensity <- dMultiModal(dfEtaDensity$grid, weights, means)
+dfEtaDensity$trueDensity <- dMultiModal(dfEtaDensity$grid,
+                                        weights = c(2,4,4), 
+                                        means= c(-2, 0, 3))
 
 dfEtaDensityPlot <- reshape2::melt(dfEtaDensity, id.vars = "grid")
 colnames(dfEtaDensityPlot) <- c("grid", "Model", "value")

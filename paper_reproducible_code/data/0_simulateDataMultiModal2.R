@@ -56,7 +56,7 @@ prob        <- plogis(term1-term2)  ### 1/(1 + exp(term.2 - term.1))
 # generate the 0/1 responses Y as a matrix of Bernoulli draws
 
 Y        <- ifelse(runif(nItems*nPersons) < prob, 1, 0)
-save(nItems, nPersons, lambda0, beta0, etaAbility, Y , prob, file = "simulation_multimodal_allValues.RData")
+save(nItems, nPersons, lambda0, beta0, etaAbility, Y , prob, file = "simulation_multimodal2_allValues.RData")
 saveRDS(Y , file = "simulation_multimodal2.rds")
 
 
