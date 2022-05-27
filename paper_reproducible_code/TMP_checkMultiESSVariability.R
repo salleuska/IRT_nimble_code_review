@@ -62,6 +62,7 @@ compilationTime <- system.time({
 ##---------------------------------------------------##
 nTimes <- 20
 out <- numeric(20)
+resList <- list()
 
 for(i in 1:nTimes){
 
@@ -81,6 +82,8 @@ for(i in 1:nTimes){
 	                                   thinEta  = 1, 
 					                  rescale  = TRUE)
 
+	resList[[i]] <- modelRes
+
 	## matrices for ESS evaluations
 	onlyItems <- cbind(modelRes[grepl("lambda", names(modelRes))][[1]],
 	              modelRes[grepl("beta", names(modelRes))][[1]])
@@ -94,63 +97,7 @@ for(i in 1:nTimes){
 }
 
 save(out, file = paste0("output/multiESS_", MCMCcontrol$niter, ".rds"))
-
-######################
-# Plots
-
-d1 <- data.frame(mESS = readRDS("output/multiESS_10000.rds"))
-d2 <- data.frame(mESS = readRDS("output/multiESS_20000.rds"))
-d4 <- data.frame(mESS = readRDS("output/multiESS_40000.rds"))
-d5 <- data.frame(mESS = readRDS("output/multiESS_50000.rds"))
-
-d1$Niter <- paste0("N samples = " , 9000, "\n(niter = 10000, 5% burnin)")
-d2$Niter <- paste0("N samples = " , 18000, "\n(niter = 20000, 5% burnin)")
-d4$Niter <- paste0("N samples = " , 36000, "\n(niter = 40000, 5% burnin)")
-d5$Niter <- paste0("N samples = " , 45000, "\n(niter = 50000, 5% burnin)")
-
-library(ggplot2)
-
-df <- rbind(d1, d2, d4, d5)
-df$Niter <- factor(df$Niter, levels = levels(as.factor(df$Niter))[c(4,1, 2,3 )])
-
-bp <- ggplot(df, aes(x=Niter, y=mESS, group=Niter)) + 
-  geom_boxplot() + theme_bw() +
-  geom_point() + 
-  theme(axis.text.x=element_blank() )+
-  facet_wrap(~Niter, ncol = 2, scales = "free") + 
-  ggtitle("NIMBLE model - mESS across 20 replications")
-bp
-ggsave(bp, file = "output/multiESSNimble.pdf", width = 8, height = 5)
-
-# boxplot(mESS ~ Niter, data = dz)
-
-
-# boxplot(mESS ~ Niter, data = df)
-
-s1 <- data.frame(mESS = readRDS("output/Stan_multiESS_10000_warmup_5000.rds"))
-s2 <- data.frame(mESS = readRDS("output/Stan_multiESS__warmup_10000.rds"))
-s3 <- data.frame(mESS = readRDS("output/Stan_multiESS_30000_warmup_15000.rds"))
-s4 <- data.frame(mESS = readRDS("output/Stan_multiESS__warmup_5000.rds"))
-
-s1$Niter <- paste0("N samples (after warmup) = " , 5000, "\n warmup = 5000")
-s2$Niter <- paste0("N samples (after warmup) = " , 10000, "\n warmup = 10000")
-s3$Niter <- paste0("N samples (after warmup) = " , 15000, "\n warmup = 15000")
-s4$Niter <- paste0("N samples (after warmup) = " , 45000, "\n warmup = 5000")
-
-
-df <- rbind(s1, s2, s3, s4)
-df$Niter <- factor(df$Niter, levels = levels(as.factor(df$Niter))[c(4,1, 2, 3)])
-
-bp <- ggplot(df, aes(x=Niter, y=mESS, group=Niter)) + 
-  geom_boxplot() + theme_bw() +
-  geom_point() + 
-  theme(axis.text.x=element_blank() )+
-  facet_wrap(~Niter, ncol = 2, scales = "free") + 
-  ggtitle("Stan Model - mESS across 20 replications")
-
-bp  
-ggsave(bp, file = "output/multiESSStan.pdf",  width = 8, height = 5)
-
+saveRDS(resList, file = paste0("output/NIMBLE_multiESS", MCMCcontrol$niter, "res.rds"))
 
 
 

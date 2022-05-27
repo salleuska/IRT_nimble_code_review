@@ -178,24 +178,24 @@ for filename in output/posterior_samples/simulation_multimodal/bnp/*.rds; do
 done
 
 ## sim2 - server
-for filename in output/posterior_samples/simulation_multimodal_I_10_N_1000/bnp/*.rds; do
+for filename in output/posterior_samples/simulation_multimodal2_I_10_N_1000/bnp/*.rds; do
 	echo $filename
 	Rscript 2_extractResults.R --resFileName=$filename
 done
 
 ## sim2 - server
-for filename in output/posterior_samples/simulation_multimodal_I_10_N_5000/bnp/*.rds; do
+for filename in output/posterior_samples/simulation_multimodal2_I_10_N_5000/bnp/*.rds; do
 	echo $filename
 	Rscript 2_extractResults.R --resFileName=$filename
 done
 
 ## sim2 - rerun - wait
-for filename in output/posterior_samples/simulation_multimodal_I_30_N_1000/bnp/*.rds; do
+for filename in output/posterior_samples/simulation_multimodal2_I_30_N_1000/bnp/*.rds; do
 	echo $filename
 	Rscript 2_extractResults.R --resFileName=$filename
 done
 
-for filename in output/posterior_samples/simulation_multimodal_I_30_N_5000/bnp/*.rds; do
+for filename in output/posterior_samples/simulation_multimodal2_I_30_N_5000/bnp/*.rds; do
 	echo $filename
 	Rscript 2_extractResults.R --resFileName=$filename
 done

@@ -78,6 +78,10 @@ sampling_args$thin   <- 1
 ##################     
 nTimes <- 20
 out <- numeric(20)
+resList <- list()
+
+paramsList <-list()
+adaptList <-list()
 
 for(i in 1:nTimes){
 	sampling_args$seed   <- i
@@ -90,12 +94,16 @@ for(i in 1:nTimes){
 	                            permuted = FALSE,
 	                            inc_warmup = FALSE)[, 1, ]
 
+ 	paramsList[[i]] <- rstan::get_sampler_params(stan_out)
+	adaptList[[i]] <- rstan::get_adaptation_info(stan_out)
+
 
 	modelRes <- posteriorRescalingBeta(samples  = samplesArray[, -grep("^eta", colnames(samplesArray))],
 	                                 samples2 = samplesArray[, grep("^eta", colnames(samplesArray))],
 	                                 thinEta  = 1, 
 	                                 rescale  = TRUE)
 
+	resList[[i]] <- modelRes
 	## matrices for ESS evaluations
 	onlyItems <- cbind(modelRes[grepl("lambda", names(modelRes))][[1]],
 	              modelRes[grepl("beta", names(modelRes))][[1]])
@@ -104,9 +112,16 @@ for(i in 1:nTimes){
 	itemsAndAbilityMultiESS <- itemsAndAbility[, !grepl("(beta\\[1\\])|(lambda\\[1\\])", colnames(itemsAndAbility))]
 
 	try(out[i] <- mcmcse::multiESS(itemsAndAbilityMultiESS, 
-	                                            method = "bm", r = 1, 
+	                                            method = "bm",
+	                                            r = 1, 
 	                                            adjust = FALSE))
 }
 
 saveRDS(out, file = paste0("output/Stan_multiESS_", MCMCcontrol$niter,"_warmup_", MCMCcontrol$nwarmup, ".rds"))
+
+outList <- list(samples = resList, 
+				adaptation = adaptList, 
+				params = paramsList)
+
+saveRDS(outList, file = paste0("output/Stan_multiESS_res.rds"))
 

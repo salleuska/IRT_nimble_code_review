@@ -3,7 +3,7 @@
 ## Sally Paganin
 ## last update: Apr, 5 2023
 ##-----------------------------------------#
-source("R_functions/ggplot_settings.R")
+source("R_functions/ggplot_settings.R") 
 ##-----------------------------------------#
 ## Set dimensions
 plot_width  <- 21 ## a4 paper
@@ -69,7 +69,6 @@ p <-  ggplot(dfParametricEff,  aes_string(x = "Strategy", y= "ESS", fill = "Stra
       scale_x_discrete(limits = rev(levels(dfParametricEff$Strategy))) 
 
 p
-
 
 ggsave(filename = "figures/REV_fig3a_simulation_efficiencies.png", plot = p,
         width = plot_width, height = plot_height, scale = 1.2, dpi = 300, units = unit, device='png')
