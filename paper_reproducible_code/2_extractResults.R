@@ -202,14 +202,16 @@ if(!file.exists(outFile)){
 } else {
   file <- read.table(outFile, header = T)
 
-  if(row[, "fileName"] %in% file$fileName)
-
-  file[which(row[, "fileName"] == file$fileName), ] <- row[1, ]
+  if(row[, "fileName"] %in% file$fileName) {
+    file[which(row[, "fileName"] == file$fileName), ] <- row[1, ]
+  } else {    
+    file <- rbind(file, row[1, ])
+  }
+  
+  write.table(file, file = outFile, 
+      col.names = TRUE, row.names = FALSE, quote = FALSE)
 
 }
-
-write.table(file, file = "output/mcmc_time/simulation_unimodal_I_10_N_1000/parametric_efficiency2.txt", 
-    col.names = TRUE, row.names = FALSE, quote = FALSE)
 
 # ############################################################################
 
