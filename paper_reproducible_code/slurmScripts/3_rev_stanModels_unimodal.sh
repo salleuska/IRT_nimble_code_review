@@ -7,25 +7,25 @@
 
 Rscript 1_runStanModel.R  \
 --data=data/simulation_unimodal.rds \
---nsamples=5000 \
+--nsamples=10000 \
 --nwarmup=5000 
 
 Rscript 1_runStanModel.R  \
 --data=data/simulation_unimodal_I_30_N_1000.rds \
---nsamples=5000 \
+--nsamples=10000 \
 --nwarmup=5000 
 
 Rscript 1_runStanModel.R  \
 --data=data/simulation_unimodal_I_30_N_5000.rds \
---nsamples=5000 \
+--nsamples=10000 \
 --nwarmup=5000 
 
 Rscript 1_runStanModel.R  \
 --data=data/simulation_unimodal_I_10_N_5000.rds \
---nsamples=5000 \
+--nsamples=10000 \
 --nwarmup=5000 
 
 Rscript 1_runStanModel.R  \
 --data=data/simulation_unimodal_I_10_N_1000.rds \
---nsamples=5000 \
+--nsamples=10000 \
 --nwarmup=5000 

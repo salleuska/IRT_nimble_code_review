@@ -20,5 +20,5 @@
 
 
  Rscript TMP_checkMultiESSVariabilityStan.R  \
---nsamples=5000 \
+--nsamples=10000 \
 --nwarmup=5000

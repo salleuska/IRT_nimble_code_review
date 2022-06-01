@@ -7,10 +7,10 @@
 
 Rscript 1_runStanModel.R  \
 --data=data/data_timss.rds \
---nsamples=5000 \
+--nsamples=15000 \
 --nwarmup=5000 
 
 Rscript 1_runStanModel.R  \
 --data=data/data_health.rds \
---nsamples=5000 \
+--nsamples=15000 \
 --nwarmup=5000 

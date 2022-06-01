@@ -170,18 +170,18 @@ if(modelType == "parametric"){
 }
 
 
-## adding WAIC
-WAIC <- NA
-
 #if(modelType == "parametric"){ 
 if(modelType %in% c("parametric", "parametric3PL", "bnp3PL")){ 
   WAIC <- resObj$modelWAIC
 } 
+if(is.null(WAIC)){ WAIC <-0} 
 
 outDirTime <- paste0("output/mcmc_time/", data)
 dir.create(file.path(outDirTime), recursive = TRUE, showWarnings = FALSE)
 
 outFile <- paste0(outDirTime, "/", modelType, "_efficiency.txt")
+
+
 row <- cbind(fileName, 
               essCodaItems,
               essCodaItemsAbility,
@@ -195,9 +195,21 @@ row <- cbind(fileName,
               WAIC)
 
 if(!file.exists(outFile)){
-	cat(colnames(row), "\n", file = outFile)
+	## if file does not exist create it and append row
+  cat(colnames(row), "\n", file = outFile)
+  # append row
+  cat(row, "\n", file = outFile, append = TRUE)
+} else {
+  file <- read.table(outFile, header = T)
+
+  if(row[, "fileName"] %in% file$fileName)
+
+  file[which(row[, "fileName"] == file$fileName), ] <- row[1, ]
+
 }
-# append row
-cat(row, "\n", file = outFile, append = TRUE)
+
+write.table(file, file = "output/mcmc_time/simulation_unimodal_I_10_N_1000/parametric_efficiency2.txt", 
+    col.names = TRUE, row.names = FALSE, quote = FALSE)
+
 # ############################################################################
 
