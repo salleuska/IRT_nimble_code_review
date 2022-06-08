@@ -6,6 +6,8 @@ Make sure to have the following `R` packages installled.
 ```r
 install.packages("nimble")
 install.packages("rstan")
+install.packages("bayestestR")
+install.packages("sn")
 
 install.packages("reshape2")
 install.packages("ggplot2")

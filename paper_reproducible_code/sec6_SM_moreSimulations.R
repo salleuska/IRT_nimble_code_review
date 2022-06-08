@@ -6,7 +6,7 @@
 ## nimble version 0.11.1
 ##-----------------------------------------#
 source("R_functions/ggplot_settings.R")
-library(ggstance)
+library(cowplot)
 ##-----------------------------------------#
 ## Set dimensions
 plot_width  <- 21 ## a4 paper
@@ -107,13 +107,14 @@ pUni <- ggplot(dfParametricEff,
   geom_point(aes(group = Strategy, color = Strategy), position = position_dodge(width = 0.2)) +
   ylab(yLabel) + xlab("") + 
   theme_bw() + 
+  ylim(c(0,110)) +
   scale_color_manual(values = labelData$colors[-1]) +
   theme(legend.position = "bottom") + coord_flip() + 
   ggtitle("Unimodal Scenario")
 
 pUni
 
-ggsave(filename = "figures/SM_fig1_unimodalMultiESS.png", plot = pUni,
+ggsave(filename = "figures/SM_unimodalMultiESS.png", plot = pUni,
         width = plot_width/3, height = plot_height , 
         dpi = 300, scale = 1.4, units = unit, device='png')
 
@@ -242,13 +243,14 @@ pBi <- ggplot(dfParametricEff,
   geom_point(aes(group = Strategy, color = Strategy), position = position_dodge(width = 0.2)) +
   ylab(yLabel) + xlab("") + 
   theme_bw() + 
+  ylim(c(0,110)) +
   scale_color_manual(values = labelData$colors[-1]) +
   theme(legend.position = "bottom") + coord_flip() + 
   ggtitle("Bimodal Scenario")
 
 pBi
 
-ggsave(filename = "figures/SM_fig2_bimodalMultiESS.png", plot = pBi,
+ggsave(filename = "figures/SM_bimodalMultiESS.png", plot = pBi,
         width = plot_width/3, height = plot_height , 
         dpi = 300, scale = 1.4, units = unit, device='png')
 
@@ -383,15 +385,34 @@ pMulti <- ggplot(dfParametricEff,
   geom_point(aes(group = Strategy, color = Strategy), position = position_dodge(width = 0.2)) +
   ylab(yLabel) + xlab("") + 
   theme_bw() + 
+  ylim(c(0,110)) +
   scale_color_manual(values = labelData$colors[-1]) +
   theme(legend.position = "bottom") + coord_flip() + 
   ggtitle("Multimodal Scenario")
 
 pMulti
 
-ggsave(filename = "figures/SM_fig3_multimodalMultiESS.png", plot = pMulti,
+ggsave(filename = "figures/SM_multimodalMultiESS.png", plot = pMulti,
         width = plot_width/3, height = plot_height , 
         dpi = 300, scale = 1.4, units = unit, device='png')
 ##-----------------------------------------#
+
+
+allPlots <- plot_grid(
+    plot_grid(
+    pUni  + theme(legend.position = "none"),
+    pBi  + theme(legend.position = "none"),
+    pMulti  + theme(legend.position = "none"),
+    nrow = 1, align = "h"
+   ),
+   get_legend(pUni + theme(legend.position = "bottom")), 
+   rel_heights = c(1, .1), nrow=2)
+
+allPlots
+
+ggsave(filename = "figures/SM_fig1_allScenarioMultiESS.png", 
+        plot = allPlots,
+        width = plot_width, height = plot_height , 
+        dpi = 300, scale = 1.4, units = unit, device='png')
 
 

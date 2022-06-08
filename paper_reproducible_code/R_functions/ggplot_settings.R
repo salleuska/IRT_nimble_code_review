@@ -54,9 +54,11 @@ labelData$plot_label <- as.factor(labelData$plot_label)
 
 modelData <- data.frame(data = c("simulation_unimodal", 
 								  "simulation_bimodal", 
+								  "simulation_multimodal", 
 								  "data_health",
 								  "data_timss"),
 						model = c("IRT_unconstrained", 
+								  "IRT_unconstrained", 
 								  "IRT_unconstrained", 
 								  "IRT_unconstrained",
 								  "SI_unconstrained_centered"))
