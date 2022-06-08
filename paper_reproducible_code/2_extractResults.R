@@ -14,8 +14,7 @@ args <- R.utils::commandArgs(asValue=TRUE)
 # args$resFileName <- "/scratch/users/sallypaganin/data_health/bnp/bnp_IRT_unconstrained.rds"
 
 # args <- list()
-# args$resFileName <- "output/posterior_samples/simulation_unimodal_I_10_N_1000/parametric/parametric_IRT_stan.rds"
-
+# args$resFileName <- "output/posterior_samples/simulation_bimodal_I_10_N_1000/parametric/parametric_SI_constrainedItem.rds"
 ## --resFileName
 ## --outDir
 ##-----------------------------------------#
@@ -169,7 +168,7 @@ if(modelType == "parametric"){
 
 }
 
-
+WAIC <- 0
 #if(modelType == "parametric"){ 
 if(modelType %in% c("parametric", "parametric3PL", "bnp3PL")){ 
   WAIC <- resObj$modelWAIC

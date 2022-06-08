@@ -91,46 +91,61 @@ for(i in 1:length(res$samples)){
 	itemsAndAbilityMultiESS <- itemsAndAbility[, !grepl("(beta\\[1\\])|(lambda\\[1\\])", colnames(itemsAndAbility))]
 
 
-	# multiESSVec[i]<- mcmcse::multiESS(itemsAndAbilityMultiESS, 
-	#                 method = "bm",
-	#                 r = 1, 
-	#                 adjust = FALSE)
+	multiESSVec[i]<- mcmcse::multiESS(itemsAndAbilityMultiESS, 
+	                method = "bm",
+	                r = 1, 
+	                adjust = FALSE)
 	essList[[i]] <- coda::effectiveSize(itemsAndAbility)
 	minESSVec[i] <- min(essList[[i]])
 	minPar[i] <- which.min(essList[[i]])
 
 	essListStan[[i]] <- apply(itemsAndAbilityMultiESS, 2, ess_bulk)
 
-	# multiESSVecInd[i]<- mcmcse::multiESS(itemsAndAbilityMultiESS[sample(1:10000, replace = F), ], 
-	#                 method = "bm",
-	#                 r = 1, 
-	#                 adjust = FALSE)
-	# minESSVecInd[i] <- min(coda::effectiveSize(itemsAndAbility[sample(1:10000, replace = F), ]))
+	multiESSVecInd[i]<- mcmcse::multiESS(itemsAndAbilityMultiESS[sample(1:10000, replace = F), ], 
+	                method = "bm",
+	                r = 1, 
+	                adjust = FALSE)
+	minESSVecInd[i] <- min(coda::effectiveSize(itemsAndAbility[sample(1:10000, replace = F), ]))
 
 }
 
 # essListStan[[6]]
 
+out <-list(multiESSVec = multiESSVec,
+			 minESSVec = minESSVec, 
+			 essList = essList, 
+			 multiESSVecInd = multiESSVecInd, 
+			 minESSVecInd = minESSVecInd)
+save(out, file = "output/infoESSStan.rds")
+load("output/infoESSStan.rds")
 
+########
 xx <- res$params[[1]]
 
-postWarmUp <- 10001:20000
 
 
-treeDepthMean <- sapply(1:20, function(x) mean(res$params[[x]][[1]][postWarmUp, "treedepth__"]))
-plot(treeDepthMean, minESSVec)
 
-sapply(1:20, function(x) sum(res$params[[x]][[1]][postWarmUp, "treedepth__"] == ))
+treeDepthMean <- sapply(1:20, function(x) mean(res$params[[x]][[1]][, "treedepth__"]))
+plot(treeDepthMean, out$multiESSVec)
+plot(treeDepthMean, out$minESSVec)
 
-leapfrogMean <- sapply(1:20, function(x) mean(res$params[[x]][[1]][postWarmUp, "n_leapfrog__"]))
-plot(leapMean, minESSVec,
-	xlab = "average of the leapfrog parameters across post-warmup iterations", 
+#sapply(1:20, function(x) sum(res$params[[x]][[1]][, "treedepth__"] == ))
+
+leapfrogMean <- sapply(1:20, function(x) mean(res$params[[x]][[1]][, "n_leapfrog__"]))
+plot(leapfrogMean, out$minESSVec,
+	xlab = "average of the leapfrog parameters across 20 runs", 
 	ylab = "minESS", 
-	main = "Stan - 20 runs")
+	main = "" )
 
-stepSizeMean <- sapply(1:20, function(x) mean(res$params[[x]][[1]][postWarmUp, "stepsize__"]))
-plot(stepSizeMean, minESSVec,
-	xlab = "average of the step-size parameter across post-warmup iterations", 
+leapfrogMean <- sapply(1:20, function(x) mean(res$params[[x]][[1]][, "n_leapfrog__"]))
+plot(leapfrogMean, out$minESSVec,
+	xlab = "average of the leapfrog parameters across 20 runs", 
+	ylab = "minESS", 
+	main = "" )
+
+stepSizeMean <- sapply(1:20, function(x) mean(res$params[[x]][[1]][, "stepsize__"]))
+plot(stepSizeMean, out$minESSVec,
+	xlab = "average of the step-size parameter across 20 runs", 
 	ylab = "minESS", 
 	main = "Stan - 20 runs")
 
@@ -147,13 +162,6 @@ minESSVec
 
 
 #####
-
-out <-list(multiESSVec = multiESSVec,
-			 minESSVec = minESSVec, 
-			 essList = essList, 
-			 multiESSVecInd = multiESSVecInd, 
-			 minESSVecInd = minESSVecInd)
-save(out, file = "output/infoESSStan.rds")
 
 load("output/infoESSStan.rds")
 stan <- out

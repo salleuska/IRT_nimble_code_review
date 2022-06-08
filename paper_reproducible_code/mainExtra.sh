@@ -123,6 +123,11 @@ for filename in output/posterior_samples/simulation_bimodal_I_10_N_5000/bnp/*.rd
 	Rscript 2_extractResults.R --resFileName=$filename
 done
 
+for filename in output/posterior_samples/simulation_bimodal_I_10_N_1000/bnp/*.rds; do
+	echo $filename
+	Rscript 2_extractResults.R --resFileName=$filename
+done
+
 for filename in output/posterior_samples/simulation_bimodal_I_30_N_1000/bnp/*.rds; do
 	echo $filename
 	Rscript 2_extractResults.R --resFileName=$filename
@@ -222,6 +227,10 @@ Rscript 2_extractResults.R --resFileName=output/posterior_samples/simulation_uni
 Rscript 2_extractResults.R --resFileName=output/posterior_samples/simulation_unimodal_I_10_N_5000/parametric/parametric_IRT_stan.rds
 Rscript 2_extractResults.R --resFileName=output/posterior_samples/simulation_unimodal_I_30_N_1000/parametric/parametric_IRT_stan.rds
 Rscript 2_extractResults.R --resFileName=output/posterior_samples/simulation_unimodal_I_30_N_5000/parametric/parametric_IRT_stan.rds
+
+
+Rscript 2_extractResults.R --resFileName=output/posterior_samples/data_timss/parametric/parametric_IRT_stan.rds
+Rscript 2_extractResults.R --resFileName=output/posterior_samples/data_health/parametric/parametric_IRT_stan.rds
 
 ##################
 ## TMP
