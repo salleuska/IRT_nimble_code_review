@@ -1,28 +1,34 @@
 #######################
 library(ggplot2)
+library(cowplot)
 #######################
 
 ## Plots
 
-d1 <- data.frame(mESS = readRDS("output/multiESS_10000.rds"))
-d2 <- data.frame(mESS = readRDS("output/multiESS_20000.rds"))
-d4 <- data.frame(mESS = readRDS("output/multiESS_40000.rds"))
-d5 <- data.frame(mESS = readRDS("output/multiESS_50000.rds"))
+# d1 <- data.frame(mESS = readRDS("output/multiESS_10000.rds"))
+# d2 <- data.frame(mESS = readRDS("output/multiESS_20000.rds"))
+# d5 <- data.frame(mESS = readRDS("output/multiESS_20000.rds"))
+load("output/multiESS_50000.rds")
+d5 <- data.frame(mESS = out)
 
-d1$Niter <- paste0("N samples = " , 9000, "\n(niter = 10000, 5% burnin)")
-d2$Niter <- paste0("N samples = " , 18000, "\n(niter = 20000, 5% burnin)")
-d4$Niter <- paste0("N samples = " , 36000, "\n(niter = 40000, 5% burnin)")
-d5$Niter <- paste0("N samples = " , 45000, "\n(niter = 50000, 5% burnin)")
+# d1$Niter <- paste0("N samples = " , 9000, "\n(niter = 10000, 5% burnin)")
+# d2$Niter <- paste0("N samples = " , 18000, "\n(niter = 20000, 5% burnin)")
+# d4$Niter <- paste0("N samples = " , 36000, "\n(niter = 40000, 5% burnin)")
+d5$Niter <- paste0("N samples = " , 45000, "\n burnin = 5000")
 
-df <- rbind(d1, d2, d4, d5)
-df$Niter <- factor(df$Niter, levels = levels(as.factor(df$Niter))[c(4,1, 2,3 )])
+#df <- rbind(d1, d2, d4, d5)
+d5$Niter <- factor(d5$Niter)
 
-bp <- ggplot(df, aes(x=Niter, y=mESS, group=Niter)) + 
-  geom_boxplot() + theme_bw() +
-  geom_point() + 
+bp <- ggplot(d5, aes(x=Niter, y=mESS, group=Niter)) + 
+	geom_violin(alpha = 0.5) +
+  geom_point(position = position_jitter(seed = 1, width = 0.2)) +
+#  geom_boxplot() +
+  theme_bw() +
+  ylim(c(15000, 45000)) + 
+#  geom_point() + 
   theme(axis.text.x=element_blank() )+
   facet_wrap(~Niter, ncol = 2, scales = "free") + 
-  ggtitle("NIMBLE model - mESS across 20 replications")
+  ggtitle("IRT constrained abilities (MH-Gibbs)\nESS across 20 replications")
 bp
 ggsave(bp, file = "output/multiESSNimble.pdf", width = 8, height = 5)
 
@@ -33,28 +39,51 @@ ggsave(bp, file = "output/multiESSNimble.pdf", width = 8, height = 5)
 
 ########
 ## Stan
-s1 <- data.frame(mESS = readRDS("output/Stan_multiESS_10000_warmup_5000.rds"))
-s2 <- data.frame(mESS = readRDS("output/Stan_multiESS__warmup_10000.rds"))
-s3 <- data.frame(mESS = readRDS("output/Stan_multiESS_30000_warmup_15000.rds"))
-s4 <- data.frame(mESS = readRDS("output/Stan_multiESS__warmup_5000.rds"))
+load("output/infoESSStan.rds")
+s2 <- data.frame(mESS = out$multiESSVec)
 
-s1$Niter <- paste0("N samples (after warmup) = " , 5000, "\n warmup = 5000")
-s2$Niter <- paste0("N samples (after warmup) = " , 10000, "\n warmup = 10000")
-s3$Niter <- paste0("N samples (after warmup) = " , 15000, "\n warmup = 15000")
-s4$Niter <- paste0("N samples (after warmup) = " , 45000, "\n warmup = 5000")
+# s1 <- data.frame(mESS = readRDS("output/Stan_multiESS_10000_warmup_5000.rds"))
+# s2 <- data.frame(mESS = readRDS("output/Stan_multiESS__warmup_10000.rds"))
+# s3 <- data.frame(mESS = readRDS("output/Stan_multiESS_30000_warmup_15000.rds"))
+# s4 <- data.frame(mESS = readRDS("output/Stan_multiESS__warmup_5000.rds"))
+
+# s1$Niter <- paste0("N samples (after warmup) = " , 5000, "\n warmup = 5000")
+s2$Niter <- paste0("N samples = " , 10000, "\n warmup = 5000")
+# s3$Niter <- paste0("N samples (after warmup) = " , 15000, "\n warmup = 15000")
+# s4$Niter <- paste0("N samples (after warmup) = " , 45000, "\n warmup = 5000")
 
 
-df <- rbind(s1, s2, s3, s4)
-df$Niter <- factor(df$Niter, levels = levels(as.factor(df$Niter))[c(4,1, 2, 3)])
+s2$Niter <- factor(s2$Niter)
 
-bp <- ggplot(df, aes(x=Niter, y=mESS, group=Niter)) + 
-  geom_boxplot() + theme_bw() +
-  geom_point() + 
+bpStan <- ggplot(s2, aes(x=Niter, y=mESS, group=Niter)) + 
+	geom_violin(alpha = 0.5) +
+  geom_point(position = position_jitter(seed = 1, width = 0.2)) +
+#  geom_boxplot() +
+  theme_bw() +
+    ylim(c(15000, 45000)) + 
+#  geom_point() + 
   theme(axis.text.x=element_blank() )+
   facet_wrap(~Niter, ncol = 2, scales = "free") + 
-  ggtitle("Stan Model - mESS across 20 replications")
+  ggtitle("IRT constrained abilities (HMC - Stan)\nmESS across 20 replications")
 
-bp  
+bpStan  
+
+
+allPlots <- plot_grid(
+    bp  + theme(legend.position = "none"),
+    bpStan  + theme(legend.position = "none"),
+    nrow = 1, align = "h"
+   )
+
+allPlots
+
+ggsave(filename = "figures/SM_MH_HMC_ESS.png", 
+        plot = allPlots,
+        width = 20, height = 8, 
+        dpi = 300, scale = 1.4, units = "cm", device='png')
+
+
+
 # ggsave(bp, file = "output/multiESSStan.pdf",  width = 8, height = 5)
 ##################
 ## Results for one example (1000, 1000)
@@ -101,11 +130,11 @@ for(i in 1:length(res$samples)){
 
 	essListStan[[i]] <- apply(itemsAndAbilityMultiESS, 2, ess_bulk)
 
-	multiESSVecInd[i]<- mcmcse::multiESS(itemsAndAbilityMultiESS[sample(1:10000, replace = F), ], 
-	                method = "bm",
-	                r = 1, 
-	                adjust = FALSE)
-	minESSVecInd[i] <- min(coda::effectiveSize(itemsAndAbility[sample(1:10000, replace = F), ]))
+	# multiESSVecInd[i]<- mcmcse::multiESS(itemsAndAbilityMultiESS[sample(1:10000, replace = F), ], 
+	#                 method = "bm",
+	#                 r = 1, 
+	#                 adjust = FALSE)
+	# minESSVecInd[i] <- min(coda::effectiveSize(itemsAndAbility[sample(1:10000, replace = F), ]))
 
 }
 
@@ -117,12 +146,10 @@ out <-list(multiESSVec = multiESSVec,
 			 multiESSVecInd = multiESSVecInd, 
 			 minESSVecInd = minESSVecInd)
 save(out, file = "output/infoESSStan.rds")
-load("output/infoESSStan.rds")
 
 ########
-xx <- res$params[[1]]
-
-
+res <- readRDS("output/Stan_multiESS_res.rds")
+load("output/infoESSStan.rds")
 
 
 treeDepthMean <- sapply(1:20, function(x) mean(res$params[[x]][[1]][, "treedepth__"]))
@@ -132,24 +159,43 @@ plot(treeDepthMean, out$minESSVec)
 #sapply(1:20, function(x) sum(res$params[[x]][[1]][, "treedepth__"] == ))
 
 leapfrogMean <- sapply(1:20, function(x) mean(res$params[[x]][[1]][, "n_leapfrog__"]))
-plot(leapfrogMean, out$minESSVec,
-	xlab = "average of the leapfrog parameters across 20 runs", 
-	ylab = "minESS", 
-	main = "" )
+
+pdf(file = "figures/SM_Leapfrog_mESS.pdf", width = 7, height = 5)
+plot(leapfrogMean, out$multiESSVec,
+	xlab = "average of the leapfrog parameters  across posterior samples", 
+	ylab = "mESS", 
+	main = "IRT constrained abilities (HMC - Stan)", 
+ 	xlim = c(15, 30), ylim = c(10000, 50000), pch = 16)
+dev.off()
 
 leapfrogMean <- sapply(1:20, function(x) mean(res$params[[x]][[1]][, "n_leapfrog__"]))
+
+pdf(file = "figures/SM_Leapfrog_minESS.pdf", width = 7, height = 5)
 plot(leapfrogMean, out$minESSVec,
-	xlab = "average of the leapfrog parameters across 20 runs", 
+	xlab = "average of the leapfrog parameter across posterior samples", 
 	ylab = "minESS", 
-	main = "" )
+	main = "IRT constrained abilities (HMC - Stan)", 
+ 	xlim = c(15, 30), ylim = c(2500, 9000), pch = 16)
+dev.off()
+
 
 stepSizeMean <- sapply(1:20, function(x) mean(res$params[[x]][[1]][, "stepsize__"]))
-plot(stepSizeMean, out$minESSVec,
-	xlab = "average of the step-size parameter across 20 runs", 
-	ylab = "minESS", 
-	main = "Stan - 20 runs")
+pdf(file = "figures/SM_stepsize_mESS.pdf", width = 7, height = 5)
+plot(stepSizeMean, out$multiESSVec,
+	xlab = "average of the step-size parameter across posterior samples", 
+	ylab = "mESS", 
+	main = "IRT constrained abilities (HMC - Stan)", 
+ 	xlim = c(0.2, 0.24), ylim = c(10000, 50000), pch = 16)
+dev.off()
 
-plot(stepSizeMean, minESSVec)
+pdf(file = "figures/SM_stepsize_minESS.pdf", width = 7, height = 5)
+plot(stepSizeMean, out$minESSVec,
+	xlab = "average of the step-size parameter across posterior samples", 
+	ylab = "min ESS", 
+	main = "IRT constrained abilities (HMC - Stan)", 
+ 	xlim = c(0.2, 0.24),  ylim = c(2500, 9000),  pch = 16)
+dev.off()
+
 
 
 
