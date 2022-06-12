@@ -14,7 +14,7 @@ args <- R.utils::commandArgs(asValue=TRUE)
 # args$resFileName <- "/scratch/users/sallypaganin/data_health/bnp/bnp_IRT_unconstrained.rds"
 
 # args <- list()
-# args$resFileName <- "output/posterior_samples/simulation_bimodal_I_10_N_1000/parametric/parametric_SI_constrainedItem.rds"
+# args$resFileName <- "output/posterior_samples/simulation_unimodal_I_30_N_5000/bnp/bnp_SI_constrainedItem.rds"
 ## --resFileName
 ## --outDir
 ##-----------------------------------------#

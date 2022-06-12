@@ -543,6 +543,25 @@ ggsave(filename = "figures/multimodal_percentiles.png", plot = pMultiPerc,
 ## Figure 6
 ## Item estimates unimodal simulation
 ##-----------------------------------------#
+
+#   allItemPlot <- plot_grid(
+#     plot_grid(
+#     pUniDiff  + theme(legend.position = "none"),
+#     pUniDiscr + theme(legend.position = "none"),
+#     pBiDiff  + theme(legend.position = "none"),
+#     pBiDiscr + theme(legend.position = "none"),
+#     pMultiDiff  + theme(legend.position = "none"),
+#     pMultiDiscr + theme(legend.position = "none"),
+#     nrow = 3, align = "h",
+#     labels= c("sim ", "quo", "qua")),
+#    get_legend(pUniDiscr + theme(legend.position = "bottom", legend.title = element_blank())), rel_heights = c(1, .1), nrow=2)
+
+# ggsave(filename = "figures/fig6_unimodal_items.png", plot = unimodalItemPlot,
+#         width = plot_width, height = plot_height , dpi = 300, units = unit, device='png')
+
+
+
+
 unimodalItemPlot <- plot_grid(
     plot_grid(
     pUniDiff  + theme(legend.position = "none"),
