@@ -587,12 +587,6 @@ bimodalItemPlot <- plot_grid(
    get_legend(pBiDiscr + theme(legend.position = "bottom", legend.title = element_blank())), 
               rel_heights = c(1, .1), nrow=2)
 
-ggsave(filename = "figures/fig7_bimodal_items.png", plot = bimodalItemPlot,
-        width = plot_width, height = plot_height , dpi = 300, units = unit, device='png')
-##-----------------------------------------#
-## Figure 8
-## Item estimates multimodal simulation
-##-----------------------------------------#
 
 multiItemPlot <- plot_grid(
     plot_grid(
@@ -603,8 +597,25 @@ multiItemPlot <- plot_grid(
    get_legend(pMultiDiscr + theme(legend.position = "bottom", legend.title = element_blank())), 
               rel_heights = c(1, .1), nrow=2)
 
-ggsave(filename = "figures/fig8_multimodal_items.png", plot = multiItemPlot,
-        width = plot_width, height = plot_height , dpi = 300, units = unit, device='png')
+
+title1 <- ggdraw() + draw_label("Bimodal Simulation", 
+      fontface='bold')
+title2 <- ggdraw() + draw_label("Multimodal Simulation", 
+      fontface='bold')
+
+allPlots <-  plot_grid(title1, bimodalItemPlot, title2,multiItemPlot,
+                  rel_heights = c(.1, 1, .1, 1), ncol =1)
+
+ggsave(filename = "figures/fig7_bimodal_multimodal_items.png", plot = allPlots,
+        width = plot_width, height = plot_height*1.8 , dpi = 300, units = unit, device='png')
+##-----------------------------------------#
+## Figure 8
+## Item estimates multimodal simulation
+##-----------------------------------------#
+
+
+# ggsave(filename = "figures/fig8_multimodal_items.png", plot = multiItemPlot,
+#         width = plot_width, height = plot_height , dpi = 300, units = unit, device='png')
 
 
 ##-----------------------------------------#
@@ -621,7 +632,7 @@ densityPosteriorMeans <- plot_grid(
    ),
    get_legend(pEtaDensityBi + theme(legend.position = "bottom")), rel_heights = c(1, .1), nrow=2)
 
-ggsave(filename = "figures/fig9_density_means.png", plot = densityPosteriorMeans,
+ggsave(filename = "figures/fig8_density_means.png", plot = densityPosteriorMeans,
         width = plot_width*1.2, height = plot_height, 
         scale = 1.3,
         dpi = 300, units = unit, device='png')
@@ -639,7 +650,7 @@ densityPosteriorPred <- plot_grid(
    ),
    get_legend(pEtaDensityBi + theme(legend.position = "bottom")), rel_heights = c(1, .1), nrow=2)
 
-ggsave(filename = "figures/fig10_density_estimate.png", plot = densityPosteriorPred,
+ggsave(filename = "figures/fig9_density_estimate.png", plot = densityPosteriorPred,
         width = plot_width*1.2, height = plot_height ,
         scale = 1.3,
          dpi = 300, units = unit, device='png')
@@ -673,7 +684,7 @@ simuPercPlot <- plot_grid(
 
 simuPercPlot
 
-ggsave(filename = "figures/fig11_simulation_percentiles.png", plot = simuPercPlot,
+ggsave(filename = "figures/fig10_simulation_percentiles.png", plot = simuPercPlot,
         width = plot_width*1.2, height = plot_height,
         scale = 1.4,
          dpi = 300, units = unit, device='png')

@@ -494,7 +494,7 @@ ggsave(filename = "figures/3PL_data_timss_percentiles.png", plot = pTimssPerc3PL
         width = plot_width, height = plot_height , dpi = 300, units = unit, device='png')
 
 # ##-----------------------------------------#
-# ## Figure 12
+# ## Figure 11
 # ## Item estimates health
 # ##-----------------------------------------#
 
@@ -508,11 +508,11 @@ healthItemPlot <- plot_grid(
 
 
 healthItemPlot
-ggsave(filename = "figures/fig12_health_item.png", plot = healthItemPlot,
+ggsave(filename = "figures/fig11_health_item.png", plot = healthItemPlot,
         width = plot_width*1.2, height = plot_height*0.9, dpi = 300, units = unit, device='png')
 
 ##-----------------------------------------#
-## Figure 13
+## Figure 12
 ## Distribution of posterior means & density - health data
 ##-----------------------------------------#
 
@@ -525,12 +525,12 @@ densityHealth <- plot_grid(
    get_legend(pEtaDensityHealth + theme(legend.position = "bottom", legend.text=element_text(size=15))), rel_heights = c(1, .1), nrow=2)
 densityHealth
 
-ggsave(filename = "figures/fig13_data_health_density_estimate.png", plot = densityHealth,
+ggsave(filename = "figures/fig12_data_health_density_estimate.png", plot = densityHealth,
         width = plot_width*1.5, height = plot_height*1.5 , dpi = 300, units = unit, device='png')
 
 
 # ##-----------------------------------------#
-# ## Figure 14
+# ## Figure 13
 # ##-----------------------------------------#
 
 timssItemPlot <- plot_grid(
@@ -541,13 +541,13 @@ timssItemPlot <- plot_grid(
 
 timssItemPlot
 
-ggsave(filename = "figures/fig14_timss3PL_item.png", plot = timssItemPlot,
+ggsave(filename = "figures/fig13_timss3PL_item.png", plot = timssItemPlot,
         width = plot_width, height = plot_height*0.9 ,
         scale = 1.3, 
         dpi = 300, units = unit, device='png')
 
 # ##-----------------------------------------#
-# ## Figure 15
+# ## Figure 14
 # ## Distribution of posterior means & density - timssdata
 # ##-----------------------------------------#
 
@@ -561,7 +561,7 @@ densityTimss <- plot_grid(
 densityTimss
 
 
-ggsave(filename = "figures/fig15_data_timss3PL_density_estimate.png", plot = densityTimss,
+ggsave(filename = "figures/fig14_data_timss3PL_density_estimate.png", plot = densityTimss,
         width = plot_width, height = plot_height ,
         scale = 1.2, dpi = 300, units = unit, device='png')
 
@@ -589,7 +589,7 @@ dataPercPlot <- plot_grid(
 
 dataPercPlot
 
-ggsave(filename = "figures/fig16_data_percentiles.png", plot = dataPercPlot,
+ggsave(filename = "figures/fig15_data_percentiles.png", plot = dataPercPlot,
         width = plot_width*1.6, height = plot_height*1.6 , dpi = 300, units = unit, device='png')
 
 
@@ -610,7 +610,7 @@ ggsave(filename = "figures/SM_timss2PL_item.png", plot = timssItemPlot,
         dpi = 300, units = unit, device='png')
 
 # ##-----------------------------------------#
-# ## Figure 15
+# ## Figure SM
 # ## Distribution of posterior means & density - timssdata
 # ##-----------------------------------------#
 

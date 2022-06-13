@@ -456,12 +456,8 @@ etaSamplesBnp   <- bnpModel$etaSamp[, indexSample]
 bnpPerc  <- matrix(0, ncol = dim(etaSamplesBnp)[2], nrow = niter)
 
 for(i in 1:niter) {  
-#	 rescaled <- bnpModel$scaleShiftEta[i]*etaSamplesBnp[i,] + bnpModel$locationShiftEta[i]
-	 # bnpPerc[i, ] <- sapply(rescaled, function(x) sum(bnpG0[[i]][,1] *pnorm(x,
-  #                                  mean = bnpG0[[i]][,2],
-  #                                  sd   = sqrt(bnpG0[[i]][,3]),
-  #                                  lower.tail = TRUE )))
-	 bnpPerc[i, ] <- sapply(etaSamplesBnp[i,], function(x) sum(bnpG0[[i]][,1] *pnorm(x,
+	 rescaled <- bnpModel$scaleShiftEta[i]*etaSamplesBnp[i,] + bnpModel$locationShiftEta[i]
+	 bnpPerc[i, ] <- sapply(rescaled, function(x) sum(bnpG0[[i]][,1] *pnorm(x,
                                    mean = bnpG0[[i]][,2],
                                    sd   = sqrt(bnpG0[[i]][,3]),
                                    lower.tail = TRUE )))
