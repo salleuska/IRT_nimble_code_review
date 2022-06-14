@@ -13,6 +13,7 @@ dir.create("figures/dataForFigures", recursive = TRUE, showWarnings = FALSE)
 library(bayestestR) ## For HDI intervals
 # ## Compute simulation MSE
 source("R_functions/ggplot_settings.R")
+source("R_functions/multimodalDensity.R")
 
 
 ##--------------------------------##
@@ -116,9 +117,12 @@ for(i in seq_len(length(bnpG0))) {
 ## Compute individual percentile
 ##------------------------------------------------------------#
 load(paste0("data/", dataName,"_allValues.RData"))
-truePerc <- pnorm(etaAbility , 0, sd = 1.25)
+# indexSample <- seq(1, 2000, length = 50)
+# truePerc <- pnorm(etaAbility[indexSample], 0, sd = 1.25)
 
+truePerc <- pnorm(etaAbility, 0, sd = 1.25)
 indexSample <- order(truePerc)[round(seq(1, 2000, length = 50))]
+
 ## take some individuals
 etaSamplesPara   <- paraModel$etaSamp[, indexSample]
 
@@ -146,6 +150,9 @@ for(i in 1:niter) {
                                    sd   = sqrt(bnpG0[[i]][,3]),
                                    lower.tail = TRUE )))
 }
+
+
+
 ##########################
 
 unimodalRes <- list(truValues = trueValues,
@@ -274,9 +281,33 @@ for(i in seq_len(length(bnpG0))) {
 ## Compute individual percentile
 ##------------------------------------------------------------#
 load(paste0("data/", dataName,"_allValues.RData"))
-truePerc <- 0.5*pnorm(etaAbility , -2, sd = 1.25) + 0.5*pnorm(etaAbility , 2, sd = 1.25)
+# indexSample <- seq(1, 2000, length = 50)
+# truePerc <- 0.5*pnorm(etaAbility[indexSample] , -2, sd = 1.25) +
+# 					 0.5*pnorm(etaAbility[indexSample] , 2, sd = 1.25)
 
-indexSample <- order(truePerc)[round(seq(1, 2000, length = 50))]
+truePerc <- 0.5*pnorm(etaAbility , -2, sd = 1.25) +
+					 0.5*pnorm(etaAbility , 2, sd = 1.25)
+
+# f.freq <- function(x)
+# {
+#   tab <- data.frame(table(x))
+#   tab$Percent <- tab$Freq*100/length(x)
+#   tab$Cum.Percent[1] <- tab$Percent[1]
+#   for(i in 2:length(tab[,1]))
+#     tab$Cum.Percent[i] <- tab$Cum.Percent[i-1] + tab$Percent[i]
+#   tab
+# }
+
+# f.freq(scores)
+
+# scores <- apply(Y, 1, sum)
+# plot(ecdf(scores))
+
+# plot(etaAbility, scores)
+# plot(apply(paraModel$etaSamp, 2, mean), scores)
+# plot(apply(bnpModel$etaSamp, 2, mean), scores)
+
+
 ## take some individuals
 etaSamplesPara   <- paraModel$etaSamp[, indexSample]
 
@@ -307,9 +338,25 @@ for(i in 1:niter) {
 }
 
 
-# plot(truePerc[indexSample])
-# points(1:50, apply(paraPerc, 2, mean), col = 4)
-# points(1:50, apply(bnpPerc, 2, mean), col = 3)
+quantSampBnp <- apply(bnpPerc, 2, function(x) quantile(x, seq(0.1, 0.9, by = 0.1)))
+quantBNP <- apply(quantSampBnp, 1, mean)
+quantTrue <- quantile(truePerc, seq(0.1, 0.9, by = 0.1))
+
+plot(quantTrue, quantBNP)
+
+plot(truePerc)
+points(1:2000, apply(paraPerc, 2, mean), col = 4)
+points(1:2000, apply(bnpPerc, 2, mean), col = 3)
+
+
+
+plot(sort(truePerc), apply(paraPerc, 2, mean)[order(truePerc)], ylim = c(0,1))
+
+plot(truePerc, apply(bnpPerc, 2, mean), ylim = c(0,1))
+abline(0,1)
+
+plot(apply(bnpPerc, 2, mean),apply(paraPerc, 2, mean), ylim = c(0,1))
+
 ##-----------------------------------------------##
 
 bimodalRes <- list(truValues = trueValues,
@@ -398,7 +445,7 @@ bnpUpper <-   list(beta   = apply(bnpModel$betaSamp, 2, function(x) ci(x,ci = 0.
 ## - parametric counterpart
 ##------------------------------------------------------------#
 niter <- nrow(paraModel$etaSamp)
-# 
+
 ## Samples for parametric density
 densitySamplesPara <- matrix(0, ncol = length(grid), nrow = niter)
 muParaSamples <- paraModel$otherParSamp[ ,"mu"]
@@ -414,8 +461,8 @@ for(i in 1:niter){
 ## Samples BNP density
 
 bnpG0 <- readRDS(paste0("output/posterior_samples_elaborated/", dataName, "/DPG0_bnp_", bestModel, ".rds"))
-indices <- seq(10, 45000, by = 10)
-bnpG0 <- bnpG0[indices]
+# indices <- seq(10, 45000, by = 10)
+#bnpG0 <- bnpG0[indices]
 
 densityDPMeasure <- matrix(0, ncol = length(grid), nrow = length(bnpG0))
 
@@ -432,9 +479,13 @@ for(i in seq_len(length(bnpG0))) {
 ## Compute individual percentile
 ##------------------------------------------------------------#
 load(paste0("data/", dataName,"_allValues.RData"))
-truePerc <- pnorm(etaAbility , 0, sd = 1.25)
+# truePerc <- pnorm(etaAbility , 0, sd = 1.25)
 
-indexSample <- order(truePerc)[round(seq(1, 2000, length = 50))]
+indexSample <- seq(1, 2000, length = 50)
+truePerc <- pMultiModal(etaAbility[indexSample],
+              weights = c(2,4,4), 
+              means= c(-2, 0, 3))
+
 ## take some individuals
 etaSamplesPara   <- paraModel$etaSamp[, indexSample]
 
@@ -449,6 +500,7 @@ for(i in 1:niter) {
                                    sd   = sqrt(s2ParaSamples[i]),
                                    lower.tail = TRUE ))
 }
+
 
 ## take some individuals
 etaSamplesBnp   <- bnpModel$etaSamp[, indexSample]
@@ -580,7 +632,7 @@ for(i in seq_len(length(bnpG0))) {
 ##------------------------------------------------------------#
 ## Compute individual percentile
 ##------------------------------------------------------------#
-indexSample <- order(bnpEstimates$eta)[round(seq(1, length(bnpEstimates$eta), length = 50))]
+indexSample <- seq(1, length(bnpEstimates$eta), length = 50)
 
 ## take some individuals
 etaSamplesPara   <- paraModel$etaSamp[, indexSample]
@@ -721,8 +773,8 @@ for(i in seq_len(length(bnpG0))) {
 ## Compute individual percentile
 ##------------------------------------------------------------#
 
+indexSample <- seq(1, length(bnpEstimates$eta), length = 50)
 
-indexSample <- order(bnpEstimates$eta)[round(seq(1, length(bnpEstimates$eta), length = 50))]
 ## take some individuals
 etaSamplesPara   <- paraModel$etaSamp[, indexSample]
 
@@ -866,7 +918,7 @@ for(i in seq_len(length(bnpG0))) {
 ##------------------------------------------------------------#
 ## Compute individual percentile
 ##------------------------------------------------------------#
-indexSample <- order(bnpEstimates$eta)[round(seq(1, length(bnpEstimates$eta), length = 50))]
+indexSample <- seq(1, length(bnpEstimates$eta), length = 50)
 ## take some individuals
 etaSamplesPara   <- paraModel$etaSamp[, indexSample]
 
