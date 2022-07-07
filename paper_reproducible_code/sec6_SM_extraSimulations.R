@@ -216,13 +216,13 @@ allPlotsTMP<- plot_grid(
    get_legend(pUni + theme(legend.position = "bottom")), 
    rel_heights = c(1, .1), nrow=2)
 
-title <- ggdraw() + draw_label("Parametric 2PL model", 
-      fontface='bold')
+# title <- ggdraw() + draw_label("Parametric 2PL model", 
+#       fontface='bold')
 
-allPlots <-  plot_grid( title, allPlotsTMP, rel_heights = c(.1, 1), nrow=2)
+#allPlots <-  plot_grid( title, allPlotsTMP, rel_heights = c(.1, 1), nrow=2)
 
 ggsave(filename = "figures/SM_fig1_allScenarioMultiESS.png", 
-        plot = allPlots,
+        plot = allPlotsTMP,
         width = plot_width, height = plot_height , 
         dpi = 300, scale = 1.4, units = unit, device='png')
 
@@ -420,14 +420,14 @@ allPlotsTMP <- plot_grid(
    get_legend(pUni + theme(legend.position = "bottom")), 
    rel_heights = c(1, .1), nrow=2)
 
-title <- ggdraw() + draw_label("Parametric 2PL model", 
-      fontface='bold')
+# title <- ggdraw() + draw_label("Parametric 2PL model", 
+#       fontface='bold')
 
-allPlots <- plot_grid( title, allPlotsTMP, rel_heights = c(.1, 1), nrow=2)
+# allPlots <- plot_grid( title, allPlotsTMP, rel_heights = c(.1, 1), nrow=2)
 
 
 ggsave(filename = "figures/SM_allScenarioMinESS.png", 
-        plot = allPlots,
+        plot = allPlotsTMP,
         width = plot_width, height = plot_height , 
         dpi = 300, scale = 1.4, units = unit, device='png')
 
@@ -612,14 +612,14 @@ allPlotsTMP <- plot_grid(
    get_legend(pUni + theme(legend.position = "bottom")), 
    rel_heights = c(1, .1), nrow=2)
 
-title <- ggdraw() + draw_label("Semiparametric 2PL model", 
-      fontface='bold')
+# title <- ggdraw() + draw_label("Semiparametric 2PL model", 
+#       fontface='bold')
 
-allPlots <-  plot_grid( title, allPlotsTMP, rel_heights = c(.1, 1), nrow=2)
+# allPlots <-  plot_grid( title, allPlotsTMP, rel_heights = c(.1, 1), nrow=2)
 
 
 ggsave(filename = "figures/SM_fig2_BNP_allScenarioMultiESS.png", 
-        plot = allPlots,
+        plot = allPlotsTMP,
         width = plot_width, height = plot_height , 
         dpi = 300, scale = 1.4, units = unit, device='png')
 
