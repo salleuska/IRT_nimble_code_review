@@ -476,12 +476,81 @@ for(i in seq_len(length(bnpG0))) {
 }
 
 ##------------------------------------------------------------#
-## Compute individual percentile
+## Compute percentile using a fixed grid
 ##------------------------------------------------------------#
 load(paste0("data/", dataName,"_allValues.RData"))
 # truePerc <- pnorm(etaAbility , 0, sd = 1.25)
 
-indexSample <- seq(1, 2000, length = 50)
+grid <- seq(-5, 4, len = 20) 
+
+truePerc <- pMultiModal(grid,
+              weights = c(2,4,4), 
+              means= c(-2, 0, 3))
+
+paraPerc  <- matrix(0, ncol = length(grid), nrow = niter)
+
+for(i in 1:niter) {  
+	 rescaled <- grid*paraModel$scaleShiftEta[i] + paraModel$locationShiftEta[i]
+	 paraPerc[i, ] <- sapply(rescaled, function(x)
+                                   pnorm(x,
+                                   mean = muParaSamples[i],
+                                   sd   = sqrt(s2ParaSamples[i]),
+                                   lower.tail = TRUE ))
+}
+bnpPerc  <- matrix(0, ncol = length(grid), nrow = niter)
+
+for(i in 1:niter) {  
+	 rescaled <- bnpModel$scaleShiftEta[i]*grid + bnpModel$locationShiftEta[i]
+	 bnpPerc[i, ] <- sapply(rescaled, function(x) sum(bnpG0[[i]][,1] *pnorm(x,
+                                   mean = bnpG0[[i]][,2],
+                                   sd   = sqrt(bnpG0[[i]][,3]),
+                                   lower.tail = TRUE )))
+}
+
+# plot(apply(bnpPerc, 2, mean), truePerc)
+# abline(0,1)
+# plot(apply(paraPerc, 2, mean), truePerc)
+
+## Plot ##
+library(ggplot2)
+library(bayestestR)
+dfPercentile <- data.frame(ind       = rep(1:length(grid), 2),
+                           estimate  = c(apply(paraPerc, 2, mean),
+                                         apply(bnpPerc, 2, mean)),
+                           CI_low    = c(apply(paraPerc, 2, quantile, 0.025),
+                                         apply(bnpPerc, 2, quantile, 0.025)),
+                           CI_upp    = c(apply(paraPerc, 2, quantile, 0.975),
+                                         apply(bnpPerc, 2, quantile, 0.975)))
+
+
+dfPercentile$trueVal <- rep(truePerc, 2)
+dfPercentile$Model <- rep(c("Parametric", "Semiparametric"), each = dim(dfPercentile)[1]/2)
+
+pUniPerc <- ggplot(dfPercentile, aes(x = ind, y = estimate*100, color = Model)) + 
+        geom_point(size = 1.5, position = position_dodge(width = 0.6)) + 
+          scale_y_continuous(breaks = seq(0, 100, by = 10)) +
+          scale_x_continuous(breaks = seq(1, 50, by = 2)) +
+            theme(axis.text.x = element_blank(), legend.title=element_blank()) + 
+        geom_errorbar(aes(ymin=CI_low*100, ymax=CI_upp*100), 
+        	width = 0.8, position = position_dodge(width = 0.6)) + 
+        geom_point(aes(x = ind, y = trueVal*100, fill = "True value"), color = "black", size = 1.5) + 
+        scale_color_manual(values=c(paraColor, bnpColor),
+            guide = guide_legend(override.aes = list(linetype = rep("blank"), 
+                                                     shape    = c(16, 16),
+                                                     color    = c(paraColor, bnpColor)))) + 
+        labs(y = "Percentile", x = "Individual", 
+                title = "Multimodal simulation") 	
+
+ggsave(filename = "figures/REV_fixed_grid_percentiles.pdf", plot = pUniPerc,
+        width = 20, height = 9 , dpi = 300, units = "cm", device='pdf')
+
+##------------------------------------------------------------#
+## Compute individual percentile - us
+##------------------------------------------------------------#
+load(paste0("data/", dataName,"_allValues.RData"))
+# truePerc <- pnorm(etaAbility , 0, sd = 1.25)
+
+indexSample <- round(seq(1, 2000, length = 50))
 truePerc <- pMultiModal(etaAbility[indexSample],
               weights = c(2,4,4), 
               means= c(-2, 0, 3))
@@ -489,6 +558,7 @@ truePerc <- pMultiModal(etaAbility[indexSample],
 ## take some individuals
 etaSamplesPara   <- paraModel$etaSamp[, indexSample]
 
+# plot(apply(etaSamplesPara, 2, mean), etaAbility[indexSample])
 ## Take a grid
 paraPerc  <- matrix(0, ncol = dim(etaSamplesPara)[2], nrow = niter)
 
@@ -514,6 +584,59 @@ for(i in 1:niter) {
                                    sd   = sqrt(bnpG0[[i]][,3]),
                                    lower.tail = TRUE )))
 }
+
+
+
+dfPercentile <- data.frame(ind       = rep(1:length(truePerc), 2),
+                           estimate  = c(apply(paraPerc, 2, mean)[order(truePerc)],
+                                         apply(bnpPerc, 2, mean)[order(truePerc)]),
+                           CI_low    = c(apply(paraPerc, 2, quantile, 0.025)[order(truePerc)],
+                                         apply(bnpPerc, 2, quantile, 0.025)[order(truePerc)]),
+                           CI_upp    = c(apply(paraPerc, 2, quantile, 0.975)[order(truePerc)],
+                                         apply(bnpPerc, 2, quantile, 0.975)[order(truePerc)]))
+
+
+
+dfPercentile$trueVal <- rep(truePerc[order(truePerc)], 2)
+dfPercentile$Model <- rep(c("Parametric", "Semiparametric"), each = dim(dfPercentile)[1]/2)
+
+pUniPerc <- ggplot(dfPercentile, aes(x = ind, y = estimate*100, color = Model)) + 
+        geom_point(size = 1.5, position = position_dodge(width = 0.6)) + 
+          scale_y_continuous(breaks = seq(0, 100, by = 10)) +
+          scale_x_continuous(breaks = seq(1, 50, by = 2)) +
+            theme(axis.text.x = element_blank(), legend.title=element_blank()) + 
+        geom_errorbar(aes(ymin=CI_low*100, ymax=CI_upp*100), 
+        	width = 0.8, position = position_dodge(width = 0.6)) + 
+        geom_point(aes(x = ind, y = trueVal*100, fill = "True value"), color = "black", size = 1.5) + 
+        scale_color_manual(values=c(paraColor, bnpColor),
+            guide = guide_legend(override.aes = list(linetype = rep("blank"), 
+                                                     shape    = c(16, 16),
+                                                     color    = c(paraColor, bnpColor)))) + 
+        labs(y = "Percentile", x = "Individual", 
+                title = "Multimodal simulation") 	
+pUniPerc
+
+ggsave(filename = "figures/REV_multimodal_percentiles.pdf", plot = pUniPerc,
+        width = 20, height = 9 , dpi = 300, units = "cm", device='pdf')
+
+pdf("REV_ability_estimate.pdf")
+plot(etaAbility[indexSample], apply(etaSamplesPara, 2, mean), col = paraColor, pch = 16, 
+	xlab = "true ability", ylab = "estimated ability")
+points(etaAbility[indexSample], apply(etaSamplesBnp, 2, mean), col = bnpColor, pch = 16)
+abline(0,1)
+dev.off()
+
+### test n 3 
+## take the original answer and scores
+
+scores <- apply(Y, 1, sum)
+x.ranks <- ecdf(scores)
+val <- sort(unique(scores))
+empirical <- cbind(val,cum.prop=x.ranks(val))
+
+trueAbility <- 
+
+
 ##########################
 
 multimodalRes <- list(truValues = trueValues,
