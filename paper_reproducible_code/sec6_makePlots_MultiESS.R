@@ -32,6 +32,7 @@ unimodal$labels <- gsub("parametric_", "", unimodal$fileName)
 bimodal$labels  <- gsub("parametric_", "", bimodal$fileName)
 multimodal$labels <- gsub("parametric_", "", multimodal$fileName)
 
+
 ## match R labels to plot labels
 unimodal$labels <- labelData[match(unimodal$labels, labelData$R_label), ]$plot_label
 bimodal$labels  <- labelData[match(bimodal$labels, labelData$R_label), ]$plot_label
@@ -42,6 +43,9 @@ if(sum(is.na(unimodal$labels)) > 0) unimodal <- droplevels(unimodal[!is.na(unimo
 if(sum(is.na(bimodal$labels)) > 0) bimodal <- droplevels(bimodal[!is.na(bimodal$labels), ])
 if(sum(is.na(multimodal$labels)) > 0) multimodal <- droplevels(multimodal[!is.na(multimodal$labels), ])
 
+# levels(unimodal$labels)[grep("stan", levels(unimodal$labels))] <- paste0(levels(unimodal$labels)[grep("stan", levels(unimodal$labels))], "*")
+# levels(bimodal$labels)[grep("stan", levels(bimodal$labels))] <- paste0(levels(bimodal$labels)[grep("stan", levels(bimodal$labels))], "*")
+# levels(multimodal$labels)[grep("stan", levels(multimodal$labels))] <- paste0(levels(multimodal$labels)[grep("stan", levels(multimodal$labels))], "*")
 
 ## data frame for plotting
 dfParametricEff <- data.frame(rbind(unimodal[, c("labels", "ESS_second", "simulation")],
@@ -70,7 +74,7 @@ p <-  ggplot(dfParametricEff,  aes_string(x = "Strategy", y= "ESS", fill = "Stra
 
 p
 
-ggsave(filename = "figures/REV_fig3a_simulation_efficiencies.png", plot = p,
+ggsave(filename = "figures/fig3a_simulation_efficiencies.png", plot = p,
         width = plot_width, height = plot_height, scale = 1.2, dpi = 300, units = unit, device='png')
 
 ##-----------------------------------------#
@@ -97,7 +101,7 @@ p <-  ggplot(dfParametricEffSampling,  aes_string(x = "Strategy", y= "ESS", fill
       scale_fill_manual(values = labelData$colors) 
 p
 
-ggsave(filename = "figures/REV_fig3b_simulation_efficiencies_sampling.png", plot = p,
+ggsave(filename = "figures/fig3b_simulation_efficiencies_sampling.png", plot = p,
         width = plot_width, height = plot_height, scale = 1.2, dpi = 300, units = unit, device='png')
 
 ##-----------------------------------------#
@@ -171,7 +175,7 @@ p <-  ggplot(dfParametricBnp,  aes_string(x = "Strategy", y= "ESS", fill = "Stra
       scale_fill_manual(values = colorsParametricBnp) 
 p
 
-ggsave(filename = "figures/REV_fig4_simulation_efficiencies_bnp.png", plot = p,
+ggsave(filename = "figures/fig4_simulation_efficiencies_bnp.png", plot = p,
         width = plot_width, height = plot_height/2*3, scale = 1.2,  dpi = 300, units = unit, device='png')
 
 ##-----------------------------------------#
@@ -226,7 +230,7 @@ dfParametricEff$Strategy  <- droplevels(factor(dfParametricEff$Strategy, levels 
 dfParametricEff <- droplevels(dfParametricEff[-grep("constrained item", dfParametricEff$Strategy), ])
 
 ## Remove Stan results because of variability in the mESS
-dfParametricEff <- droplevels(dfParametricEff[-which(dfParametricEff$Strategy == "IRT HMC (stan)"), ])
+dfParametricEff <- droplevels(dfParametricEff[-which(dfParametricEff$Strategy == "IRT HMC (stan)**"), ])
 
 
 colorsParametricData <- labelData$colors[match(levels(dfParametricEff$Strategy), labelData$plot_label)]
@@ -248,7 +252,7 @@ p <-  ggplot(dfParametricEff,  aes_string(x = "Strategy", y= "ESS", fill = "Stra
 
 p
 
-ggsave(filename = "figures/REV_fig5_data_efficiencies.png", plot = p,
+ggsave(filename = "figures/fig5_data_efficiencies.png", plot = p,
         width = plot_width, height = plot_height/6*5 ,scale = 1.2, dpi = 300, units = unit, device='png')
 
 
@@ -321,5 +325,5 @@ p <-  ggplot(dfBnpEff,  aes_string(x = "Strategy", y= "ESS", fill = "Strategy", 
       scale_fill_manual(values = colorsBnp) 
 p
 
-ggsave(filename = "figures/REV_fig5b_data_efficiencies_bnp.png", plot = p,
+ggsave(filename = "figures/fig5b_data_efficiencies_bnp.png", plot = p,
         width = plot_width, height = plot_height/6*4 ,scale = 1.2, dpi = 300, units = unit, device='png')

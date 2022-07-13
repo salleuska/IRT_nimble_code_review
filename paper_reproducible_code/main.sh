@@ -3,7 +3,8 @@
 #############################################
 ## Bayesian semiparametric Item Response Theory models using NIMBLE 
 ## Sally Paganin
-## January 2021
+## July 2022
+#############################################
 
 mkdir -p figures
 mkdir -p figures/dataForFigures

@@ -208,8 +208,31 @@ done
 ##################################################################
 ## Stan models
 
+Rscript 2_extractResults.R --resFileName=output/posterior_samples/simulation_multimodal/parametric/parametric_IRT_stan2.rds
+Rscript 2_extractResults.R --resFileName=output/posterior_samples/simulation_multimodal/parametric/parametric_IRT_stan3.rds
+Rscript 2_extractResults.R --resFileName=output/posterior_samples/simulation_multimodal/parametric/parametric_IRT_stan4.rds
+Rscript 2_extractResults.R --resFileName=output/posterior_samples/simulation_multimodal/parametric/parametric_IRT_stan5.rds
+Rscript 2_extractResults.R --resFileName=output/posterior_samples/simulation_multimodal/parametric/parametric_IRT_stan6.rds
+Rscript 2_extractResults.R --resFileName=output/posterior_samples/simulation_multimodal/parametric/parametric_IRT_stan7.rds
+Rscript 2_extractResults.R --resFileName=output/posterior_samples/simulation_multimodal/parametric/parametric_IRT_stan8.rds
+Rscript 2_extractResults.R --resFileName=output/posterior_samples/simulation_multimodal/parametric/parametric_IRT_stan9.rds
+Rscript 2_extractResults.R --resFileName=output/posterior_samples/simulation_multimodal/parametric/parametric_IRT_stan10.rds
+Rscript 2_extractResults.R --resFileName=output/posterior_samples/simulation_multimodal/parametric/parametric_IRT_stan11.rds
 
-Rscript 2_extractResults.R --resFileName=output/posterior_samples/simulation_bimodal/parametric/parametric_IRT_stan.rds
+
+Rscript 2_extractResults.R --resFileName=output/posterior_samples/simulation_bimodal/parametric/parametric_IRT_stan2.rds
+Rscript 2_extractResults.R --resFileName=output/posterior_samples/simulation_bimodal/parametric/parametric_IRT_stan3.rds
+Rscript 2_extractResults.R --resFileName=output/posterior_samples/simulation_bimodal/parametric/parametric_IRT_stan4.rds
+Rscript 2_extractResults.R --resFileName=output/posterior_samples/simulation_bimodal/parametric/parametric_IRT_stan5.rds
+Rscript 2_extractResults.R --resFileName=output/posterior_samples/simulation_bimodal/parametric/parametric_IRT_stan6.rds
+Rscript 2_extractResults.R --resFileName=output/posterior_samples/simulation_bimodal/parametric/parametric_IRT_stan7.rds
+Rscript 2_extractResults.R --resFileName=output/posterior_samples/simulation_bimodal/parametric/parametric_IRT_stan8.rds
+Rscript 2_extractResults.R --resFileName=output/posterior_samples/simulation_bimodal/parametric/parametric_IRT_stan9.rds
+Rscript 2_extractResults.R --resFileName=output/posterior_samples/simulation_bimodal/parametric/parametric_IRT_stan10.rds
+Rscript 2_extractResults.R --resFileName=output/posterior_samples/simulation_bimodal/parametric/parametric_IRT_stan11.rds
+
+
+
 Rscript 2_extractResults.R --resFileName=output/posterior_samples/simulation_unimodal/parametric/parametric_IRT_stan.rds
 Rscript 2_extractResults.R --resFileName=output/posterior_samples/simulation_multimodal/parametric/parametric_IRT_stan.rds
 
@@ -233,7 +256,15 @@ Rscript 2_extractResults.R --resFileName=output/posterior_samples/data_timss/par
 Rscript 2_extractResults.R --resFileName=output/posterior_samples/data_health/parametric/parametric_IRT_stan.rds
 
 ##################
-## TMP
-# Rscript 2_extractResults.R --resFileName=output/posterior_samples/simulation_unimodal_I_30_N_5000/parametric/parametric_SI_constrainedAbilities.rds
-# Rscript 2_extractResults.R --resFileName=output/posterior_samples/simulation_unimodal_I_30_N_5000/parametric/parametric_SI_constrainedItem.rds
-# Rscript 2_extractResults.R --resFileName=output/posterior_samples/simulation_unimodal_I_10_N_1000/parametric/parametric_SI_unconstrained_centered.rds
+## TMP for plot
+Rscript 2_extractResults.R --resFileName=output/posterior_samples/simulation_unimodal/parametric/parametric_IRT_constrainedItem.rds
+Rscript 2_extractResults.R --resFileName=output/posterior_samples/simulation_unimodal/parametric/parametric_IRT_unconstrained.rds
+Rscript 2_extractResults.R --resFileName=output/posterior_samples/simulation_unimodal/parametric/parametric_IRT_stan.rds
+
+Rscript 2_extractResults.R --resFileName=output/posterior_samples/simulation_bimodal/parametric/parametric_IRT_constrainedItem.rds
+Rscript 2_extractResults.R --resFileName=output/posterior_samples/simulation_bimodal/parametric/parametric_IRT_unconstrained.rds
+Rscript 2_extractResults.R --resFileName=output/posterior_samples/simulation_bimodal/parametric/parametric_IRT_stan.rds
+
+Rscript 2_extractResults.R --resFileName=output/posterior_samples/simulation_multimodal/parametric/parametric_IRT_constrainedItem.rds
+Rscript 2_extractResults.R --resFileName=output/posterior_samples/simulation_multimodal/parametric/parametric_IRT_unconstrained.rds
+Rscript 2_extractResults.R --resFileName=output/posterior_samples/simulation_multimodal/parametric/parametric_IRT_stan.rds

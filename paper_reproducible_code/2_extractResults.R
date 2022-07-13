@@ -14,7 +14,7 @@ args <- R.utils::commandArgs(asValue=TRUE)
 # args$resFileName <- "/scratch/users/sallypaganin/data_health/bnp/bnp_IRT_unconstrained.rds"
 
 # args <- list()
-# args$resFileName <- "output/posterior_samples/simulation_unimodal_I_30_N_5000/bnp/bnp_SI_constrainedItem.rds"
+# args$resFileName <- "output/posterior_samples/simulation_bimodal/parametric/parametric_IRT_stan11.rds"
 ## --resFileName
 ## --outDir
 ##-----------------------------------------#
@@ -37,7 +37,7 @@ constraint <- strsplit(basename(fileName), "\\_|.rds")[[1]][3]
 resObj <- readRDS(args$resFileName)
 
 
-if(constraint == "stan") { 
+if(grepl("stan", constraint)) { 
   thinEta <-1 
   nSamp <- resObj$MCMCcontrol$niter - resObj$MCMCcontrol$nwarmup
   indicesEta <- seq(from = thinEta,  
@@ -62,7 +62,7 @@ if(constraint == "stan") {
 ## set flag to true by default
 if(constraint == "constrainedItem") rescale <- FALSE else rescale <- TRUE 
 
-if(constraint == "stan") { 
+if(grepl("stan", constraint)) { 
   modelRes <- posteriorRescalingBeta(samples  = resObj$samples[, -grep("^eta", colnames(resObj$samples))],
                                      samples2 = resObj$samples[, grep("^eta", colnames(resObj$samples))],
                                      thinEta  = 1, 
@@ -107,7 +107,6 @@ if(constraint != "stan" & thinEta == 1) {
 
 }
 
-
 outDirResults <- paste0(outDir, data, "/", modelType)
 dir.create(file.path(outDirResults), recursive = TRUE, showWarnings = FALSE)
 
@@ -131,9 +130,13 @@ multiEssItemsAbility   <- NA
 
 ## compute mixing performance measures
 essCodaItems <- min(coda::effectiveSize(onlyItems))
-essCodaItemsAbility <- min(coda::effectiveSize(itemsAndAbility))
 
-if(constraint != "stan") { 
+##compute and save ESS for parameters
+essItemsAbility <- coda::effectiveSize(itemsAndAbility)
+
+essCodaItemsAbility <- min(essItemsAbility)
+
+if(!grepl("stan", constraint)) { 
   essCodaLogLik                <- coda::effectiveSize(modelRes$otherParSamp[, "myLogLik"])
   essCodaLogPostAll            <- coda::effectiveSize(modelRes$otherParSamp[, "myLogProbAll"])
   essCodaLogPostItemsAbility   <- coda::effectiveSize(modelRes$otherParSamp[, "myLogProbSome"])
@@ -157,9 +160,12 @@ compilationTime <- resObj$compilationTime[3]
 runningTime <- resObj$runningTime[3]
 samplingTime <- 0
 
+## TO plot distribtion of the ESS
+## saveRDS(essItemsAbility/runningTime, file = paste0(outDirResults, "/ESS_" , fileName, ".rds"))
+
 ## if parametric save also sampling time
 if(modelType == "parametric"){ 
-  if(constraint == "stan") { 
+  if(grepl("stan", constraint)) { 
     samplingTime <- resObj$samplingTime
   } else {
     percBurnin <- resObj$MCMCcontrol$nburnin/resObj$MCMCcontrol$niter

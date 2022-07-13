@@ -132,7 +132,7 @@ outDir <- paste0(dir, "/", dataName, "/", modelType, "/")
 dir.create(file.path(outDir), recursive = TRUE, showWarnings = FALSE)
 
 if(args$mode == "rep"){
-	saveRDS(results, file  = paste0(outDir, seeed, "_", "parametric_IRT_stan.rds"))
+	saveRDS(results, file  = paste0(outDir, seed, "_", "parametric_IRT_stan.rds"))
 } else {
 	saveRDS(results, file  = paste0(outDir, "parametric_IRT_stan.rds"))
 

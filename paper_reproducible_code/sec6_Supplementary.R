@@ -623,4 +623,152 @@ ggsave(filename = "figures/SM_fig2_BNP_allScenarioMultiESS.png",
         width = plot_width, height = plot_height , 
         dpi = 300, scale = 1.4, units = unit, device='png')
 
+##-----------------------------------------#
+## ESS distribution plots
+##-----------------------------------------#
+## Unimodal
+
+xx <- readRDS("output/posterior_samples_elaborated/simulation_unimodal/ESS_parametric_IRT_constrainedItem.rds")
+unimodalDF <- data.frame(cbind(names(xx), xx, "IRT constrained item"))
+
+xx <- readRDS("output/posterior_samples_elaborated/simulation_unimodal/ESS_parametric_IRT_unconstrained.rds")
+unimodalDF <- rbind(unimodalDF, (cbind(names(xx), xx, "IRT unconstrained")))
+
+xx <- readRDS("output/posterior_samples_elaborated/simulation_unimodal/ESS_parametric_IRT_stan.rds")
+unimodalDF <- rbind(unimodalDF, (cbind(names(xx), xx, "IRT HMC (stan)**")))
+
+colnames(unimodalDF) <- c("parameter", "efficiency", "model")
+
+unimodalDF$parameter[grep("lambda", unimodalDF$parameter)] <- "lambda"
+unimodalDF$parameter[grep("beta", unimodalDF$parameter)] <- "beta"
+unimodalDF$parameter[grep("^eta", unimodalDF$parameter)] <- "eta"
+
+unimodalDF$efficiency <- as.numeric(unimodalDF$efficiency)
+unimodalDF$model <- factor(unimodalDF$model, levels = unique(unimodalDF$model)[c(3, 2, 1)])
+
+unimodalDF$parameter <- factor(unimodalDF$parameter, levels = c("beta", "lambda", "eta"))
+
+
+plotCol <- labelData[c(1, 2, 4), ]$colors
+
+
+# ggplot(unimodalDF, aes(x = efficiency, fill = model)) + 
+#       geom_histogram(aes(y = ..density..), color = "white", binwidth=0.2) + 
+#       facet_grid(model ~ parameter , scales = "free") + 
+#       scale_fill_manual(values = plotCol) +
+#       xlab("ESS/time") + ylab("Density")
+
+plotUni <- ggplot(unimodalDF, aes(x = efficiency, fill = model)) + 
+      geom_histogram(data=subset(unimodalDF, parameter == "eta"), aes(y = ..density..), color = "white", binwidth=0.5) + 
+      geom_histogram(data=subset(unimodalDF, parameter == "beta"), aes(y = ..density..), color = "white", binwidth=0.2) + 
+      geom_histogram(data=subset(unimodalDF, parameter == "lambda"), aes(y = ..density..), color = "white", binwidth=0.2) + 
+      facet_grid(model ~ parameter , scales = "free") + 
+      scale_fill_manual(values = plotCol) +
+      xlab("ESS/time") + ylab("Density") + theme(legend.position = 'none')
+
+
+ggsave(filename = "figures/SM_figESS_unimodal.png", 
+        plot = plotUni,
+        width = plot_width, height = plot_height*1.5 , 
+        dpi = 300, scale = 1.4, units = unit, device='png')
+######
+
+
+xx <- readRDS("output/posterior_samples_elaborated/simulation_bimodal/ESS_parametric_IRT_constrainedItem.rds")
+bimodalDF <- data.frame(cbind(names(xx), xx, "IRT constrained item"))
+
+xx <- readRDS("output/posterior_samples_elaborated/simulation_bimodal/ESS_parametric_IRT_unconstrained.rds")
+bimodalDF <- rbind(bimodalDF, (cbind(names(xx), xx, "IRT unconstrained")))
+
+xx <- readRDS("output/posterior_samples_elaborated/simulation_bimodal/ESS_parametric_IRT_stan.rds")
+bimodalDF <- rbind(bimodalDF, (cbind(names(xx), xx, "IRT HMC (stan)**")))
+
+colnames(bimodalDF) <- c("parameter", "efficiency", "model")
+
+bimodalDF$parameter[grep("lambda", bimodalDF$parameter)] <- "lambda"
+bimodalDF$parameter[grep("beta", bimodalDF$parameter)] <- "beta"
+bimodalDF$parameter[grep("^eta", bimodalDF$parameter)] <- "eta"
+
+bimodalDF$efficiency <- as.numeric(bimodalDF$efficiency)
+bimodalDF$model <- factor(bimodalDF$model, levels = unique(bimodalDF$model)[c(3, 2, 1)])
+
+bimodalDF$parameter <- factor(bimodalDF$parameter, levels = c("beta", "lambda", "eta"))
+
+
+plotCol <- labelData[c(1, 2, 4), ]$colors
+
+
+# ggplot(bimodalDF, aes(x = efficiency, fill = model)) + 
+#       geom_histogram(aes(y = ..density..), color = "white", binwidth=0.2) + 
+#       facet_grid(model ~ parameter , scales = "free") + 
+#       scale_fill_manual(values = plotCol) +
+#       xlab("ESS/time") + ylab("Density")
+
+plotBi <- ggplot(bimodalDF, aes(x = efficiency, fill = model)) + 
+      geom_histogram(data=subset(bimodalDF, parameter == "eta"), aes(y = ..density..), color = "white", binwidth=0.2) + 
+      geom_histogram(data=subset(bimodalDF, parameter == "beta"), aes(y = ..density..), color = "white", binwidth=0.2) + 
+      geom_histogram(data=subset(bimodalDF, parameter == "lambda"), aes(y = ..density..), color = "white", binwidth=0.2) + 
+      facet_grid(model ~ parameter , scales = "free") + 
+      scale_fill_manual(values = plotCol) +
+      xlab("ESS/time") + ylab("Density") + theme(legend.position = 'none')
+plotBi
+
+ggsave(filename = "figures/SM_figESS_bimodal.png", 
+        plot = plotBi,
+        width = plot_width, height = plot_height*1.5 , 
+        dpi = 300, scale = 1.4, units = unit, device='png')
+
+
+######
+
+
+xx <- readRDS("output/posterior_samples_elaborated/simulation_multimodal/ESS_parametric_IRT_constrainedItem.rds")
+multimodalDF <- data.frame(cbind(names(xx), xx, "IRT constrained item"))
+
+xx <- readRDS("output/posterior_samples_elaborated/simulation_multimodal/ESS_parametric_IRT_unconstrained.rds")
+multimodalDF <- rbind(multimodalDF, (cbind(names(xx), xx, "IRT unconstrained")))
+
+xx <- readRDS("output/posterior_samples_elaborated/simulation_multimodal/ESS_parametric_IRT_stan.rds")
+multimodalDF <- rbind(multimodalDF, (cbind(names(xx), xx, "IRT HMC (stan)**")))
+
+colnames(multimodalDF) <- c("parameter", "efficiency", "model")
+
+multimodalDF$parameter[grep("lambda", multimodalDF$parameter)] <- "lambda"
+multimodalDF$parameter[grep("beta", multimodalDF$parameter)] <- "beta"
+multimodalDF$parameter[grep("^eta", multimodalDF$parameter)] <- "eta"
+
+multimodalDF$efficiency <- as.numeric(multimodalDF$efficiency)
+multimodalDF$model <- factor(multimodalDF$model, levels = unique(multimodalDF$model)[c(3, 2, 1)])
+
+multimodalDF$parameter <- factor(multimodalDF$parameter, levels = c("beta", "lambda", "eta"))
+
+
+plotCol <- labelData[c(1, 2, 4), ]$colors
+
+
+# ggplot(multimodalDF, aes(x = efficiency, fill = model)) + 
+#       geom_histogram(aes(y = ..density..), color = "white", binwidth=0.2) + 
+#       facet_grid(model ~ parameter , scales = "free") + 
+#       scale_fill_manual(values = plotCol) +
+#       xlab("ESS/time") + ylab("Density")
+
+plotMulti <- ggplot(multimodalDF, aes(x = efficiency, fill = model)) + 
+      geom_histogram(data=subset(multimodalDF, parameter == "eta"), aes(y = ..density..), color = "white", binwidth=0.3) + 
+      geom_histogram(data=subset(multimodalDF, parameter == "beta"), aes(y = ..density..), color = "white", binwidth=0.2) + 
+      geom_histogram(data=subset(multimodalDF, parameter == "lambda"), aes(y = ..density..), color = "white", binwidth=0.2) + 
+      facet_grid(model ~ parameter , scales = "free") + 
+      scale_fill_manual(values = plotCol) +
+      xlab("ESS/time") + ylab("Density") + theme(legend.position = 'none')
+plotMulti
+
+ggsave(filename = "figures/SM_figESS_multimodal.png", 
+        plot = plotMulti,
+        width = plot_width, height = plot_height*1.5 , 
+        dpi = 300, scale = 1.4, units = unit, device='png')
+
+
+
+
+
+
 
