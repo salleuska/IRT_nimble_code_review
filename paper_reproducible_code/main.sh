@@ -210,23 +210,23 @@ Rscript 1_runModels.R  \
 
 Rscript 1_runStanModel.R  \
 --data=data/simulation_unimodal.rds \
---nsamples=4000 \
---nwarmup=4000 
+--nsamples=10000 \
+--nwarmup=5000 
 
 Rscript 1_runStanModel.R  \
 --data=data/simulation_bimodal.rds \
---nsamples=4000 \
---nwarmup=4000 
+--nsamples=10000 \
+--nwarmup=5000 
 
 Rscript 1_runStanModel.R  \
 --data=data/data_health.rds \
---nsamples=4000 \
---nwarmup=4000 
+--nsamples=10000 \
+--nwarmup=5000 
 
 Rscript 1_runStanModel.R  \
 --data=data/data_timss.rds \
---nsamples=4000 \
---nwarmup=4000 
+--nsamples=10000 \
+--nwarmup=5000 
 #############################################
 ## 2) extract MCMC samples and postprocess them
 #############################################

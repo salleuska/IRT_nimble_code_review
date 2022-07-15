@@ -1,4 +1,9 @@
 #!/bin/bash
+#############################################
+## Bayesian semiparametric Item Response Theory models using NIMBLE 
+## Sally Paganin
+## July 2022
+#############################################
 
 #############################################
 ## 2) extract MCMC samples and postprocess them
