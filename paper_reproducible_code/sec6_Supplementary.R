@@ -667,6 +667,7 @@ plotUni <- ggplot(unimodalDF, aes(x = efficiency, fill = model)) +
       xlab("ESS/second") + ylab("Density") + theme(legend.position = 'none')
 plotUni
 
+
 infoUni <- read.table(paste0("output/mcmc_time/simulation_unimodal/", paraFileName), header = T)
 infoUni <- subset(infoUni, fileName %in% c("parametric_IRT_stan","parametric_IRT_unconstrained", "parametric_IRT_constrainedItem"))
 
@@ -676,7 +677,7 @@ infoUni$model  <- levels(unimodalDF$model)[c(3, 2, 1)]
 infoUni$parameters <- "eta"
 infoUni$x <- rep(17, 3)
 infoUni$y <- c(3, 0.8,1)
-infoUni$text <- paste0("mESS: ", round(infoUni$mESS), "\ntotal time: ", round(infoUni$totalTime), "s")
+infoUni$text <- paste0("mESS/second: ", round(infoUni$mESS/infoUni$totalTime))
 
 infoUni$model <- factor(infoUni$model, levels = levels(unimodalDF$model))
 
@@ -743,7 +744,7 @@ infoBi$model  <- levels(unimodalDF$model)[c(3, 2, 1)]
 infoBi$parameters <- "eta"
 infoBi$x <- rep(5, 3)
 infoBi$y <- c(3, 0.8, 1)
-infoBi$text <- paste0("mESS: ", round(infoBi$mESS), "\ntotal time: ", round(infoBi$totalTime), "s")
+infoBi$text <- paste0("mESS/second: ", round(infoBi$mESS/infoBi$totalTime))
 
 infoBi$model <- factor(infoBi$model, levels = levels(unimodalDF$model))
 
@@ -811,9 +812,9 @@ infoMulti <- infoMulti[, c("fileName", "multiEssItemsAbility", "runningTime")]
 colnames(infoMulti) <- c("model", "mESS", "totalTime")
 infoMulti$model  <- levels(unimodalDF$model)[c(3, 2, 1)]
 infoMulti$parameters <- "eta"
-infoMulti$x <- rep(15, 3)
+infoMulti$x <- rep(11, 3)
 infoMulti$y <- c(1, 1, 0.8)
-infoMulti$text <- paste0("mESS: ", round(infoMulti$mESS), "\ntotal time: ", round(infoMulti$totalTime), "s")
+infoMulti$text <- paste0("mESS/second: ", round(infoMulti$mESS/infoMulti$totalTime))
 
 infoMulti$model <- factor(infoMulti$model, levels = levels(unimodalDF$model))
 
@@ -829,8 +830,6 @@ ggsave(filename = "figures/SM_figESS_multimodal.png",
         dpi = 300, scale = 1.4, units = unit, device='png')
 
 
-
-
-
+infoBi
 
 

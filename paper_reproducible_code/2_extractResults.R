@@ -11,10 +11,7 @@ source("R_functions/rescalingFunctions.R")
 args <- R.utils::commandArgs(asValue=TRUE)
 
 # args <- list()
-# args$resFileName <- "/scratch/users/sallypaganin/data_health/bnp/bnp_IRT_unconstrained.rds"
-
-# args <- list()
-# args$resFileName <- "output/posterior_samples/simulation_bimodal/parametric/parametric_IRT_stan11.rds"
+# args$resFileName <- "output/posterior_samples/simulation_unimodal/parametric/parametric_IRT_constrainedItem.rds"
 ## --resFileName
 ## --outDir
 ##-----------------------------------------#
@@ -106,12 +103,12 @@ if(constraint != "stan" & thinEta == 1) {
   modelRes$otherParSamp <- modelRes$otherParSamp[indicesEta, ]
 
 }
-
-outDirResults <- paste0(outDir, data, "/", modelType)
+outDirResults <- paste0(outDir, data, "/")
 dir.create(file.path(outDirResults), recursive = TRUE, showWarnings = FALSE)
 
+#######################
 saveRDS(modelRes, file = paste0(outDirResults, "/" , fileName, ".rds"))
-
+#######################
 ##-----------------------------------------#
 ## Get efficency results 
 ##-----------------------------------------#
@@ -127,7 +124,7 @@ essCodaLogPostItemsAbility   <- NA
 multiEssItemsAbility   <- NA
 
 
-
+#######################
 ## compute mixing performance measures
 essCodaItems <- min(coda::effectiveSize(onlyItems))
 
@@ -141,9 +138,9 @@ if(!grepl("stan", constraint)) {
   essCodaLogPostAll            <- coda::effectiveSize(modelRes$otherParSamp[, "myLogProbAll"])
   essCodaLogPostItemsAbility   <- coda::effectiveSize(modelRes$otherParSamp[, "myLogProbSome"])
 }
-
+#######################
 itemsAndAbilityMultiESS <- itemsAndAbility[, !grepl("(beta\\[1\\])|(lambda\\[1\\])", colnames(itemsAndAbility))]
-
+#######################
 ## Multivariate ESS using multivariate Batch mean(mBm) stimator 
 ## Vats et al Biometrika paper on multivariate ESS
 ## note: by defaul multiESS tries to get the lugsail estimator
@@ -153,6 +150,8 @@ itemsAndAbilityMultiESS <- itemsAndAbility[, !grepl("(beta\\[1\\])|(lambda\\[1\\
 try(multiEssItemsAbility <- mcmcse::multiESS(itemsAndAbilityMultiESS, 
                                             method = "bm", r = 1, adjust = FALSE))
 
+try(essItemsAbilityMCMCSE <- mcmcse::ess(itemsAndAbilityMultiESS, 
+                                            method = "bm", r = 1))
 
 ## Extract times
 
@@ -161,8 +160,9 @@ runningTime <- resObj$runningTime[3]
 samplingTime <- 0
 
 ## TO plot distribtion of the ESS
-## saveRDS(essItemsAbility/runningTime, file = paste0(outDirResults, "/ESS_" , fileName, ".rds"))
+#saveRDS(essItemsAbilityMCMCSE/runningTime, file = paste0(outDirResults, "/ESS_" , fileName, ".rds"))
 
+#######################
 ## if parametric save also sampling time
 if(modelType == "parametric"){ 
   if(grepl("stan", constraint)) { 
@@ -218,5 +218,5 @@ if(!file.exists(outFile)){
 
 }
 
-# ############################################################################
+############################################################################
 
