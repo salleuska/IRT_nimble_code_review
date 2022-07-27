@@ -668,26 +668,27 @@ plotUni <- ggplot(unimodalDF, aes(x = efficiency, fill = model)) +
 plotUni
 
 
-infoUni <- read.table(paste0("output/mcmc_time/simulation_unimodal/", paraFileName), header = T)
-infoUni <- subset(infoUni, fileName %in% c("parametric_IRT_stan","parametric_IRT_unconstrained", "parametric_IRT_constrainedItem"))
+# infoUni <- read.table(paste0("output/mcmc_time/simulation_unimodal/", paraFileName), header = T)
+# infoUni <- subset(infoUni, fileName %in% c("parametric_IRT_stan","parametric_IRT_unconstrained", "parametric_IRT_constrainedItem"))
 
-infoUni <- infoUni[, c("fileName", "multiEssItemsAbility", "runningTime")]
-colnames(infoUni) <- c("model", "mESS", "totalTime")
-infoUni$model  <- levels(unimodalDF$model)[c(3, 2, 1)]
-infoUni$parameters <- "eta"
-infoUni$x <- rep(17, 3)
-infoUni$y <- c(3, 0.8,1)
-infoUni$text <- paste0("mESS/second: ", round(infoUni$mESS/infoUni$totalTime))
+# infoUni <- infoUni[, c("fileName", "multiEssItemsAbility", "runningTime")]
+# colnames(infoUni) <- c("model", "mESS", "totalTime")
+# infoUni$model  <- levels(unimodalDF$model)[c(3, 2, 1)]
+# infoUni$parameters <- "eta"
+# infoUni$x <- rep(17, 3)
+# infoUni$y <- c(3, 0.8,1)
+# infoUni$text <- paste0("mESS/second: ", round(infoUni$mESS/infoUni$totalTime))
 
-infoUni$model <- factor(infoUni$model, levels = levels(unimodalDF$model))
+# infoUni$model <- factor(infoUni$model, levels = levels(unimodalDF$model))
 
-infoUni$parameter <- factor(infoUni$parameter, levels = c("beta", "lambda", "eta"))
+# infoUni$parameter <- factor(infoUni$parameter, levels = c("beta", "lambda", "eta"))
 
 
-plotUni <- plotUni + geom_text(data = infoUni, 
-                   aes(x = x, y = y, label = text), size = 4)
+# plotUni <- plotUni + geom_text(data = infoUni, 
+#                    aes(x = x, y = y, label = text), size = 4)
 
-plotUni
+# plotUni
+
 ggsave(filename = "figures/SM_figESS_unimodal.png", 
         plot = plotUni,
         width = plot_width, height = plot_height*1.5 , 
@@ -735,24 +736,24 @@ plotBi <- ggplot(bimodalDF, aes(x = efficiency, fill = model)) +
 plotBi
 
 
-infoBi <- read.table(paste0("output/mcmc_time/simulation_bimodal/", paraFileName), header = T)
-infoBi <- subset(infoBi, fileName %in% c("parametric_IRT_stan","parametric_IRT_unconstrained", "parametric_IRT_constrainedItem"))
+# infoBi <- read.table(paste0("output/mcmc_time/simulation_bimodal/", paraFileName), header = T)
+# infoBi <- subset(infoBi, fileName %in% c("parametric_IRT_stan","parametric_IRT_unconstrained", "parametric_IRT_constrainedItem"))
 
-infoBi <- infoBi[, c("fileName", "multiEssItemsAbility", "runningTime")]
-colnames(infoBi) <- c("model", "mESS", "totalTime")
-infoBi$model  <- levels(unimodalDF$model)[c(3, 2, 1)]
-infoBi$parameters <- "eta"
-infoBi$x <- rep(5, 3)
-infoBi$y <- c(3, 0.8, 1)
-infoBi$text <- paste0("mESS/second: ", round(infoBi$mESS/infoBi$totalTime))
+# infoBi <- infoBi[, c("fileName", "multiEssItemsAbility", "runningTime")]
+# colnames(infoBi) <- c("model", "mESS", "totalTime")
+# infoBi$model  <- levels(unimodalDF$model)[c(3, 2, 1)]
+# infoBi$parameters <- "eta"
+# infoBi$x <- rep(5, 3)
+# infoBi$y <- c(3, 0.8, 1)
+# infoBi$text <- paste0("mESS/second: ", round(infoBi$mESS/infoBi$totalTime))
 
-infoBi$model <- factor(infoBi$model, levels = levels(unimodalDF$model))
+# infoBi$model <- factor(infoBi$model, levels = levels(unimodalDF$model))
 
-infoBi$parameter <- factor(infoBi$parameter, levels = c("beta", "lambda", "eta"))
+# infoBi$parameter <- factor(infoBi$parameter, levels = c("beta", "lambda", "eta"))
 
 
-plotBi <- plotBi + geom_text(data = infoBi, 
-                   aes(x = x, y = y, label = text), size = 4)
+# plotBi <- plotBi + geom_text(data = infoBi, 
+#                    aes(x = x, y = y, label = text), size = 4)
 
 ggsave(filename = "figures/SM_figESS_bimodal.png", 
         plot = plotBi,
@@ -790,11 +791,6 @@ multimodalDF$parameter <- factor(multimodalDF$parameter, levels = c("beta", "lam
 plotCol <- labelData[c(1, 4, 2), ]$colors
 
 
-# ggplot(multimodalDF, aes(x = efficiency, fill = model)) + 
-#       geom_histogram(aes(y = ..density..), color = "white", binwidth=0.2) + 
-#       facet_grid(model ~ parameter , scales = "free") + 
-#       scale_fill_manual(values = plotCol) +
-#       xlab("ESS/time") + ylab("Density")
 
 plotMulti <- ggplot(multimodalDF, aes(x = efficiency, fill = model)) + 
       geom_histogram(data=subset(multimodalDF, parameter == "eta"), aes(y = ..density..), color = "white", binwidth=0.3) + 
@@ -805,24 +801,24 @@ plotMulti <- ggplot(multimodalDF, aes(x = efficiency, fill = model)) +
       xlab("ESS/time") + ylab("Density") + theme(legend.position = 'none')
 plotMulti
 
-infoMulti <- read.table(paste0("output/mcmc_time/simulation_multimodal/", paraFileName), header = T)
-infoMulti <- subset(infoMulti, fileName %in% c("parametric_IRT_stan","parametric_IRT_unconstrained", "parametric_IRT_constrainedItem"))
+# infoMulti <- read.table(paste0("output/mcmc_time/simulation_multimodal/", paraFileName), header = T)
+# infoMulti <- subset(infoMulti, fileName %in% c("parametric_IRT_stan","parametric_IRT_unconstrained", "parametric_IRT_constrainedItem"))
 
-infoMulti <- infoMulti[, c("fileName", "multiEssItemsAbility", "runningTime")]
-colnames(infoMulti) <- c("model", "mESS", "totalTime")
-infoMulti$model  <- levels(unimodalDF$model)[c(3, 2, 1)]
-infoMulti$parameters <- "eta"
-infoMulti$x <- rep(11, 3)
-infoMulti$y <- c(1, 1, 0.8)
-infoMulti$text <- paste0("mESS/second: ", round(infoMulti$mESS/infoMulti$totalTime))
+# infoMulti <- infoMulti[, c("fileName", "multiEssItemsAbility", "runningTime")]
+# colnames(infoMulti) <- c("model", "mESS", "totalTime")
+# infoMulti$model  <- levels(unimodalDF$model)[c(3, 2, 1)]
+# infoMulti$parameters <- "eta"
+# infoMulti$x <- rep(11, 3)
+# infoMulti$y <- c(1, 1, 0.8)
+# infoMulti$text <- paste0("mESS/second: ", round(infoMulti$mESS/infoMulti$totalTime))
 
-infoMulti$model <- factor(infoMulti$model, levels = levels(unimodalDF$model))
+# infoMulti$model <- factor(infoMulti$model, levels = levels(unimodalDF$model))
 
-infoMulti$parameter <- factor(infoMulti$parameter, levels = c("beta", "lambda", "eta"))
+# infoMulti$parameter <- factor(infoMulti$parameter, levels = c("beta", "lambda", "eta"))
 
 
-plotMulti <- plotMulti + geom_text(data = infoMulti, 
-                   aes(x = x, y = y, label = text), size = 4)
+# plotMulti <- plotMulti + geom_text(data = infoMulti, 
+#                    aes(x = x, y = y, label = text), size = 4)
 
 ggsave(filename = "figures/SM_figESS_multimodal.png", 
         plot = plotMulti,
