@@ -799,8 +799,8 @@ plotCol <- labelData[c(1, 4, 2), ]$colors
 plotMulti <- ggplot(multimodalDF, aes(x = efficiency, fill = model)) + 
       geom_histogram(data=subset(multimodalDF, parameter == "eta"), aes(y = ..density..), color = "white", binwidth=0.3) + 
       geom_histogram(data=subset(multimodalDF, parameter == "beta"), aes(y = ..density..), color = "white", binwidth=0.2) + 
-      geom_histogram(data=subset(multimodalDF, parameter == "lambda"), aes(y = ..density..), color = "white", binwidth=0.4) + 
-      facet_grid(parameter ~ model, scales = "free") + 
+      geom_histogram(data=subset(multimodalDF, parameter == "lambda"), aes(y = ..density..), color = "white", binwidth=0.2) + 
+      facet_grid(model ~ parameter , scales = "free") + 
       scale_fill_manual(values = plotCol) +
       xlab("ESS/time") + ylab("Density") + theme(legend.position = 'none')
 plotMulti
