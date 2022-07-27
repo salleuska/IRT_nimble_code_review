@@ -826,7 +826,4 @@ ggsave(filename = "figures/SM_figESS_multimodal.png",
         dpi = 300, scale = 1.4, units = unit, device='png')
 
 
-infoUni
-infoBi
-infoMulti
 
