@@ -745,7 +745,7 @@ plotBi
 # infoBi$parameters <- "eta"
 # infoBi$x <- rep(5, 3)
 # infoBi$y <- c(3, 0.8, 1)
-# infoBi$text <- paste0("mESS/second: ", round(infoBi$mESS/infoBi$totalTime))
+# infoBi$text <- paste0("mESS/second: ", infoBi$mESS/infoBi$totalTime)
 
 # infoBi$model <- factor(infoBi$model, levels = levels(unimodalDF$model))
 
@@ -810,7 +810,7 @@ plotMulti
 # infoMulti$parameters <- "eta"
 # infoMulti$x <- rep(11, 3)
 # infoMulti$y <- c(1, 1, 0.8)
-# infoMulti$text <- paste0("mESS/second: ", round(infoMulti$mESS/infoMulti$totalTime))
+# infoMulti$text <- paste0("mESS/second: ", infoMulti$mESS/infoMulti$totalTime)
 
 # infoMulti$model <- factor(infoMulti$model, levels = levels(unimodalDF$model))
 
